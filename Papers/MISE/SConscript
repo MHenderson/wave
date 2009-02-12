@@ -1,5 +1,8 @@
 Import('env')
 list = Split("""metaconsist.tex
-                metaconsist.bib""")
-env.PDF(list)
+                metaconsist.bib
+                figures/mcfigure1.eps
+                figures/mcfigure2.eps
+                figures/mcfigure3.eps""")
+env.DVI(list)
 

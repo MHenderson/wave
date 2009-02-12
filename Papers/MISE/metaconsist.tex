@@ -7,7 +7,7 @@
 %  $Revision: 1.4 $
 %
 
-\documentclass[times, 10pt,twocolumn]{article} 
+\documentclass[times, 10pt,twocolumn]{article}
 \usepackage{latex8}
 \usepackage{times}
 \usepackage{epsfig}
@@ -69,7 +69,7 @@ The language we choose to describe a proposed architecture needs to be sufficien
 Hence many system architects use diagrammatic notations such as those that constitute UML and SysML and specialise them to their specific needs. This specialisation can be represented by a {\em specialised metamodel} which enumerates the entities that will be used to describe the architecture and defines the constraints that instances of these entities must obey. 
 \begin{figure}[h]
   \centering
-   {\epsfig{file = mcfigure1.eps, width = 7.0 cm}}
+   {\epsfig{file = figures/mcfigure1.eps, width = 7.0 cm}}
    \caption{A class diagram showing the client/server relationships
 between components in a system. Arrows point from client to server. This will be part of a much larger diagram. An architecture for a large system will include many such diagrams.}
 \end{figure}
@@ -84,7 +84,7 @@ The example we have chosen to illustrate this method is very simple. It presumes
 To be able to adequately validate the architecture (which we presume may comprise hundreds of Components) we will introduce redundancy in its description. We will say which Components are clients, using which others as servers. We will also enumerate a range of scenarios where particular behaviours of the system are achieved by specific sequences of messages between components.
 \begin{figure}[h]
   \centering
-   {\epsfig{file = mcfigure2.eps, width = 7.0 cm}}
+   {\epsfig{file = figures/mcfigure2.eps, width = 7.0 cm}}
    \caption{A sequence diagram that shows part of one scenario. The system would be described by many such scenarios. The message labelled op1, from C2 to C1, is inconsistent with the class diagram in Figure 1.}
 \end{figure}
 The architecture description will comprise many class diagrams such as that shown in Figure 1 and many sequence diagrams such as that shown in Figure 2. They conform to the metamodel shown in Figure 3 in a way that we will now formalise.
@@ -92,7 +92,7 @@ The architecture description will comprise many class diagrams such as that show
 The snippet of a class diagram in Figure 1 has three entities of type Component (labelled C1, C2 and C3). There are also three Associations between these Components which we have not labelled. Each Association has a source and a target. These properties are captured by the relations {\small\verb$source(Association, Component)$} and {\small\verb$target(Association, Component)$} 
 \begin{figure}[h]
   \centering
-   {\epsfig{file = mcfigure3.eps, width = 7.0 cm}}
+   {\epsfig{file = figures/mcfigure3.eps, width = 7.0 cm}}
    \caption{A class diagram of the specialised metamodel to which the class and sequence diagrams in Figures 1 and 2 should conform. This diagram is supplemented by additional constraints given in terms of the relations named here.}
 \end{figure}
 
