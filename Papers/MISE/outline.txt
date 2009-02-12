@@ -1,0 +1,27 @@
+
+Metamodels for System Architecture - Coping with Inconsistency
+
+Very large systems have an architecture that is designed to allow them to evolve through a long life. Such systems are developed by first making a model of their architecture. This model constitutes a formal architecture description. The model is governed by a metamodel whose rules determine the consistency and completeness of the description. During development of a system, it is quite normal for the architecture description to be both incomplete and inconsistent. The architects strive to produce a complete description and to eliminate the inconsistencies. By means of an example, we show how architecture descriptions formalised in relational algebra can aid this iterative process of development and how the model and the metamodel must co-evolve. We describe a design tool that we have developed to support this process of co-evolution.
+
+
+specialised MM
+iterative change to M and MM
+need language that supports that
+need tool
+describe example
+describe tool
+describe next steps
+
+metamodel ->
+use relations ->
+example ->
+devt process generate error report ->
+need to rapidly modify MM
+
+Introduction
+System Architecture Models
+Metamodels and Relational Algebra
+Consistency 
+Support Tools
+
+

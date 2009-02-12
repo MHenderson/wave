@@ -1,0 +1,9 @@
+Import('env')
+list = Split("""archconsist.tex
+                abstract.tex
+                authors.tex
+                keywords.tex
+                title.tex
+                archconsist.bib""")
+env.PDF(list)
+
