@@ -10,7 +10,9 @@ for input in inputs:
     string_inputs += (input + ':')
 
 env['TEXINPUTS'] = ':.:/home/matthew/.TeX:' + string_inputs
+env['LATEXCOM'] = 'cd ${TARGET.dir} && export TEXINPUTS=$TEXINPUTS && $LATEX --shell-escape $LATEXFLAGS ${SOURCE.file}'
 env['PDFLATEXCOM'] = 'cd ${TARGET.dir} && export TEXINPUTS=$TEXINPUTS && $PDFLATEX --shell-escape $PDFLATEXFLAGS ${SOURCE.file}'
+
 Export('env')
 
 SConscript(['SConscript'],build_dir='/home/matthew/Documents/Wave')

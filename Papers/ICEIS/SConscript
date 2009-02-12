@@ -4,6 +4,10 @@ list = Split("""archconsist.tex
                 authors.tex
                 keywords.tex
                 title.tex
-                archconsist.bib""")
-env.PDF(list)
+                archconsist.bib
+                figures/figure1.eps
+                figures/figure2.eps
+                figures/figure3.eps
+                figures/figure4.eps""")
+env.DVI(list)
 
