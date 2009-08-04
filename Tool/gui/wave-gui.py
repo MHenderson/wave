@@ -6,6 +6,14 @@ import images
 MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
 
+class WaveApp(wx.App):
+
+    def __init__(self, redirect = False, filename = None, useBestVisual = False, clearSigInt = True):
+        wx.App.__init__(self, redirect, filename, useBestVisual, clearSigInt)
+
+    def OnInit(self):
+        return True
+
 class MainFrame(wx.Frame):
 
     def __init__(self, parent, id):
@@ -36,7 +44,8 @@ class MainFrame(wx.Frame):
         menuBar.Append(scripts_menu, "&Scripts")
         self.SetMenuBar(menuBar)
 
-app = wx.PySimpleApp()
-frame = MainFrame(None, -1)
-frame.Show(1)
-app.MainLoop()
+if __name__ == '__main__':
+    app = WaveApp()
+    frame = MainFrame(None, -1)
+    frame.Show(1)
+    app.MainLoop()
