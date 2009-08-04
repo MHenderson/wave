@@ -28,7 +28,7 @@ class MainFrame(wx.Frame):
         models_menu = wx.Menu()
         models_menu.Append(wx.NewId(), "&Open", "Open")
         models_menu.Append(wx.NewId(), "&Save", "Save")
-        models_menu.Append(wx.NewId(), "E&xit", "Exit")
+        exit_menu_item = models_menu.Append(wx.NewId(), "E&xit", "Exit")
         menuBar.Append(models_menu, "&Models")
         metamodels_menu = wx.Menu()
         metamodels_menu.Append(wx.NewId(), "&Import", "Copy")
@@ -43,6 +43,15 @@ class MainFrame(wx.Frame):
         scripts_menu.Append(wx.NewId(), "Export HTML report", "")
         menuBar.Append(scripts_menu, "&Scripts")
         self.SetMenuBar(menuBar)
+
+        # Event-handling
+
+        self.Bind(wx.EVT_MENU, self.OnCloseMe, exit_menu_item)
+
+    # Event-handlers
+
+    def OnCloseMe(self, event):
+        self.Close(True)
 
 if __name__ == '__main__':
     app = WaveApp()
