@@ -7,6 +7,7 @@ MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
 
 class WaveApp(wx.App):
+    """Custom WAVE wxPython-application class."""
 
     def __init__(self, redirect = False, filename = None, useBestVisual = False, clearSigInt = True):
         wx.App.__init__(self, redirect, filename, useBestVisual, clearSigInt)
@@ -15,38 +16,57 @@ class WaveApp(wx.App):
         return True
 
 class MainFrame(wx.Frame):
+    """Custom WAVE top-level window class."""
 
     def __init__(self, parent, id):
         wx.Frame.__init__(self, parent, id, title = MAIN_FRAME_TITLE, size = MAIN_FRAME_SIZE)
-        panel = wx.Panel(self)
-        panel.SetBackgroundColour('White')
-        statusBar = self.CreateStatusBar()
-        toolbar = self.CreateToolBar()
-        toolbar.AddSimpleTool(wx.NewId(), images.getNewBitmap(), "New", "Long help for 'New'")
-        toolbar.Realize()
-        menuBar = wx.MenuBar()
+        self.init_panel()
+        self.init_statusbar()
+        self.init_toolbar()
+        self.init_menubar()
+
+        # Event-handling
+
+        self.Bind(wx.EVT_MENU, self.OnCloseMe, self.exit_menu_item)
+
+    # Initialization
+
+    def init_panel(self):
+        self.panel = wx.Panel(self)
+        self.panel.SetBackgroundColour('White')
+
+    def init_statusbar(self):
+        self.statusBar = self.CreateStatusBar()
+
+    def init_toolbar(self):
+        self.toolbar = self.CreateToolBar()
+        self.toolbar.AddSimpleTool(wx.NewId(), images.getNewBitmap(), "New", "Long help for 'New'")
+        self.toolbar.Realize()
+
+    def init_menubar(self):
+        # Models Menu
         models_menu = wx.Menu()
         models_menu.Append(wx.NewId(), "&Open", "Open")
         models_menu.Append(wx.NewId(), "&Save", "Save")
-        exit_menu_item = models_menu.Append(wx.NewId(), "E&xit", "Exit")
-        menuBar.Append(models_menu, "&Models")
+        self.exit_menu_item = models_menu.Append(wx.NewId(), "E&xit", "Exit")
+        # Metamodels Menu
         metamodels_menu = wx.Menu()
         metamodels_menu.Append(wx.NewId(), "&Import", "Copy")
         metamodels_menu.Append(wx.NewId(), "&Export", "Copy")
         metamodels_menu.AppendSeparator()
         metamodels_menu.Append(wx.NewId(), "&MM2 (Current metamodel)", "Display Options")
-        menuBar.Append(metamodels_menu, "M&eta-models")
+        # Scripts Menu
         scripts_menu = wx.Menu()
         scripts_menu.Append(wx.NewId(), "d&r", "Dangling requires")
         scripts_menu.Append(wx.NewId(), "d&s", "Dangling supplies")
         scripts_menu.AppendSeparator()
         scripts_menu.Append(wx.NewId(), "Export HTML report", "")
-        menuBar.Append(scripts_menu, "&Scripts")
+        # Menu Bar
+        menuBar = wx.MenuBar()
+        menuBar.Append(models_menu, "&Models")
+        menuBar.Append(metamodels_menu, "M&eta-models")
+        menuBar.Append(scripts_menu, "&Scripts")       
         self.SetMenuBar(menuBar)
-
-        # Event-handling
-
-        self.Bind(wx.EVT_MENU, self.OnCloseMe, exit_menu_item)
 
     # Event-handlers
 
