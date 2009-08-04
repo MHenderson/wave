@@ -1,7 +1,6 @@
 #!/usr/bin/env python
  
-import wx
-import images
+import wx, images, simplegrid
 
 MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
@@ -24,6 +23,7 @@ class MainFrame(wx.Frame):
         self.init_statusbar()
         self.init_toolbar()
         self.init_menubar()
+	self.init_grid()
 
         # Event-handling
 
@@ -34,6 +34,9 @@ class MainFrame(wx.Frame):
     def init_panel(self):
         self.panel = wx.Panel(self)
         self.panel.SetBackgroundColour('White')
+
+    def init_grid(self):
+	simplegrid.SimpleGrid(self.panel)	
 
     def init_statusbar(self):
         self.statusBar = self.CreateStatusBar()
@@ -78,3 +81,4 @@ if __name__ == '__main__':
     frame = MainFrame(None, -1)
     frame.Show(1)
     app.MainLoop()
+
