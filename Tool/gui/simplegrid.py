@@ -2,9 +2,6 @@ import wx, wx.grid
             
 class RelationTable(wx.grid.PyGridTableBase):
 
-	colLabels = ["Source", "Target"]
-	rowLabels = ["0", "1"]
-
 	def __init__(self, entries):
 		wx.grid.PyGridTableBase.__init__(self)
 		self.entries = entries
@@ -16,10 +13,10 @@ class RelationTable(wx.grid.PyGridTableBase):
 		return 2
 
 	def GetColLabelValue(self, col):
-		return self.colLabels[col]
+		return col
 
 	def GetRowLabelValue(self, row):
-		return self.rowLabels[row]
+		return row
 
 	def IsEmptyCell(self, row, col):
 		return False
@@ -29,12 +26,19 @@ class RelationTable(wx.grid.PyGridTableBase):
 
 	def SetValue(self, row, col, value):
 		current_tuple = self.entries[row]
-		new_tuple = current_tuple[:col] + (value,) + current_tuple[col+1:]
-		self.entries[row] = new_tuple
+		self.entries[row] = current_tuple[:col] + (value,) + current_tuple[col+1:]
+
 
 class SimpleGrid(wx.grid.Grid):
+
     def __init__(self, parent, data):
         wx.grid.Grid.__init__(self, parent, -1, wx.Point(0, 0), wx.Size(600, 600))
         tableBase = RelationTable(data)
         self.SetTable(tableBase) 
+
+    def AppendRows(self, num_of_rows):
+	data = self.GetTable().entries
+	data.append((0,0))
+	new_table = RelationTable(data)
+	self.SetTable(new_table) 	
 

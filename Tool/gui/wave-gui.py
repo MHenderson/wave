@@ -14,7 +14,7 @@ class WaveApp(wx.App):
         wx.App.__init__(self, redirect, filename, useBestVisual, clearSigInt)
 
     def OnInit(self):
-        return True
+	return True
 
 class MainFrame(wx.Frame):
     """Custom WAVE top-level window class."""
@@ -30,6 +30,7 @@ class MainFrame(wx.Frame):
         # Event-handling
 
         self.Bind(wx.EVT_MENU, self.OnCloseMe, self.exit_menu_item)
+        self.Bind(wx.EVT_MENU, self.OnNewRow, self.new_row_menu_item)
 
     # Initialization
 
@@ -53,11 +54,12 @@ class MainFrame(wx.Frame):
         models_menu = wx.Menu()
         models_menu.Append(wx.NewId(), "&Open", "Open")
         models_menu.Append(wx.NewId(), "&Save", "Save")
+        self.new_row_menu_item = models_menu.Append(wx.NewId(), "Add row", "Add row")
         self.exit_menu_item = models_menu.Append(wx.NewId(), "E&xit", "Exit")
         # Metamodels Menu
         metamodels_menu = wx.Menu()
-        metamodels_menu.Append(wx.NewId(), "&Import", "Copy")
-        metamodels_menu.Append(wx.NewId(), "&Export", "Copy")
+        metamodels_menu.Append(wx.NewId(), "&Import", "Import")
+        metamodels_menu.Append(wx.NewId(), "&Export", "Export")
         metamodels_menu.AppendSeparator()
         metamodels_menu.Append(wx.NewId(), "&MM2 (Current metamodel)", "Display Options")
         # Scripts Menu
@@ -77,6 +79,9 @@ class MainFrame(wx.Frame):
 
     def OnCloseMe(self, event):
         self.Close(True)
+
+    def OnNewRow(self, event):
+	self.grid.AppendRows(1)
 
 if __name__ == '__main__':
     app = WaveApp()
