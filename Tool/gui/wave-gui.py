@@ -36,7 +36,8 @@ class MainFrame(wx.Frame):
         self.panel.SetBackgroundColour('White')
 
     def init_grid(self):
-	simplegrid.SimpleGrid(self.panel)	
+	data = [simplegrid.RelationTableElement("A", "B"), simplegrid.RelationTableElement("X", "Y")]
+	simplegrid.SimpleGrid(self.panel, data)	
 
     def init_statusbar(self):
         self.statusBar = self.CreateStatusBar()
