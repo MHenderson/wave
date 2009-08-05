@@ -5,6 +5,8 @@ import wx, images, simplegrid
 MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
 
+data = [("A", "B"), ("X", "Y")]
+
 class WaveApp(wx.App):
     """Custom WAVE wxPython-application class."""
 
@@ -36,8 +38,7 @@ class MainFrame(wx.Frame):
         self.panel.SetBackgroundColour('White')
 
     def init_grid(self):
-	data = [simplegrid.RelationTableElement("A", "B"), simplegrid.RelationTableElement("X", "Y")]
-	simplegrid.SimpleGrid(self.panel, data)	
+	self.grid = simplegrid.SimpleGrid(self.panel, data)	
 
     def init_statusbar(self):
         self.statusBar = self.CreateStatusBar()
