@@ -1,32 +1,32 @@
 import wx, wx.grid
             
 class RelationTable(wx.grid.PyGridTableBase):
+    
+    def __init__(self, entries):
+	wx.grid.PyGridTableBase.__init__(self)
+	self.entries = entries
+	
+    def GetNumberRows(self):
+	return len(self.entries)
 
-	def __init__(self, entries):
-		wx.grid.PyGridTableBase.__init__(self)
-		self.entries = entries
+    def GetNumberCols(self):
+        return 2
 
-	def GetNumberRows(self):
-		return len(self.entries)
+    def GetColLabelValue(self, col):
+	return col
 
-	def GetNumberCols(self):
-		return 2
+    def GetRowLabelValue(self, row):
+	return row
 
-	def GetColLabelValue(self, col):
-		return col
+    def IsEmptyCell(self, row, col):
+	return False
 
-	def GetRowLabelValue(self, row):
-		return row
+    def GetValue(self, row, col):
+	return self.entries[row][col]
 
-	def IsEmptyCell(self, row, col):
-		return False
-
-	def GetValue(self, row, col):
-		return self.entries[row][col]
-
-	def SetValue(self, row, col, value):
-		current_tuple = self.entries[row]
-		self.entries[row] = current_tuple[:col] + (value,) + current_tuple[col+1:]
+    def SetValue(self, row, col, value):
+	current_tuple = self.entries[row]
+	self.entries[row] = current_tuple[:col] + (value,) + current_tuple[col+1:]
 
 class SimpleGrid(wx.grid.Grid):
 
