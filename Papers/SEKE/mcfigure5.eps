@@ -1,0 +1,57 @@
+%!PS-Adobe-2.0 
+%%BoundingBox: 0 100 700 400
+/pbox {
+/h exch def /w exch def /b exch def /a exch def
+newpath a b moveto w 0 rlineto 0 h rlineto w neg 0 rlineto 
+0 h neg rlineto stroke} def
+
+
+/arrow {
+/y1 exch def /x1 exch def /y0 exch def /x0 exch def
+newpath x0 y0 moveto x1 y1 lineto stroke} def
+
+
+/label {/y exch def /x exch def /fs exch def /str exch def
+/Helvetica findfont fs scalefont setfont
+newpath x y moveto
+str stringwidth /sy exch def /sx exch def
+sx 2 div neg 12 neg rmoveto str show} def
+
+/arrowhead {% stack: s x1 y1, current point: x0 y0
+gsave
+currentpoint % s x1 y1 x0 y0
+4 2 roll exch % s x0 y0 y1 x1
+4 -1 roll exch % s y0 y1 x0 x1
+sub 3 1 roll % s x1-x2 y0 y1
+sub exch % s y0-y1 x1-x2
+atan rotate % rotate over arctan((y0-y1)/(x1-x2))
+dup scale % scale by factor s
+-7 2 rlineto 0 -2 rlineto 0 -2 rlineto
+closepath fill % fill arrowhead
+grestore
+newpath
+} def
+
+
+50 250 150 100 pbox
+(:C1) 24 125 300 label 
+300 250 150 100 pbox
+(:C2) 24 375 300 label 
+550 250 150 100 pbox
+(:C3) 24 625 300 label 
+
+gsave
+[4 4] 2 setdash
+125 250 125 100 arrow
+375 250 375 100 arrow
+625 250 625 100 arrow
+grestore
+
+125 125 375 125 arrow 
+newpath 125 125 moveto 3 375 125 arrowhead
+(op1) 24 250 150 label
+
+375 175 625 175 arrow 
+newpath 625 175 moveto 3 375 175 arrowhead
+(op3) 24 500 200 label
+
