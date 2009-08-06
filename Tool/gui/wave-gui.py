@@ -14,7 +14,14 @@ class WaveApp(wx.App):
         wx.App.__init__(self, redirect, filename, useBestVisual, clearSigInt)
 
     def OnInit(self):
-	return True
+	# image = wx.Image("wave-logo.bmp", wx.BITMAP_TYPE_BMP)
+	# bmp = image.ConvertToBitmap()
+	# wx.SplashScreen(bmp, wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT, 1000, None, -1)
+	# wx.Yield()
+	frame = MainFrame(None, -1)
+        frame.Show(1)
+	self.SetTopWindow(frame)
+        return True
 
 class MainFrame(wx.Frame):
     """Custom WAVE top-level window class."""
@@ -81,11 +88,10 @@ class MainFrame(wx.Frame):
         self.Close(True)
 
     def OnNewRow(self, event):
-	self.grid.AppendRows(1)
+	self.grid.AppendRows()
+	self.grid.ForceRefresh()
 
 if __name__ == '__main__':
     app = WaveApp()
-    frame = MainFrame(None, -1)
-    frame.Show(1)
     app.MainLoop()
 
