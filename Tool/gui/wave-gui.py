@@ -31,16 +31,8 @@ class MainFrame(wx.Frame):
         self.init_panel()
         self.init_statusbar()
         self.init_toolbar()
-        self.init_menubar()
-
-        # Event-handling
-
-        self.Bind(wx.EVT_MENU, self.OnCloseMe, self.exit_menu_item)
-        self.Bind(wx.EVT_MENU, self.OnNewRow, self.new_row_menu_item)
-        self.Bind(wx.EVT_MENU, self.OnNewModel, self.new_model_menu_item)
-	self.Bind(wx.EVT_TOOL, self.OnNewModel, self.new_model_toolbar_item)
-
-    # Initialization
+        self.init_menus()
+	self.init_event_binding()
 
     def init_panel(self):
         self.panel = wx.Panel(self)
@@ -53,32 +45,46 @@ class MainFrame(wx.Frame):
         self.new_model_toolbar_item = self.toolbar.AddSimpleTool(wx.NewId(), images.getNewBitmap(), "New", "Long help for 'New'")
         self.toolbar.Realize()
 
+    def init_menus(self):
+	self.init_models_menu()
+	self.init_metamodels_menu()
+	self.init_scripts_menu()
+	self.init_menubar()
+
+    def init_models_menu(self):
+        self.models_menu = wx.Menu()
+        self.new_model_menu_item = self.models_menu.Append(wx.NewId(), "&New\tCtrl-N", "New")
+        self.models_menu.Append(wx.NewId(), "&Open", "Open")
+        self.models_menu.Append(wx.NewId(), "&Save", "Save")
+        self.new_row_menu_item = self.models_menu.Append(wx.NewId(), "Add row\tCtrl-R", "Add row")
+        self.exit_menu_item = self.models_menu.Append(wx.NewId(), "E&xit\tCtrl-Q", "Exit")
+
+    def init_metamodels_menu(self):
+        self.metamodels_menu = wx.Menu()
+        self.metamodels_menu.Append(wx.NewId(), "&Import", "Import")
+        self.metamodels_menu.Append(wx.NewId(), "&Export", "Export")
+        self.metamodels_menu.AppendSeparator()
+        self.metamodels_menu.Append(wx.NewId(), "&MM2 (Current metamodel)", "Display Options")
+        
+    def init_scripts_menu(self):
+        self.scripts_menu = wx.Menu()
+        self.scripts_menu.Append(wx.NewId(), "d&r", "Dangling requires")
+        self.scripts_menu.Append(wx.NewId(), "d&s", "Dangling supplies")
+        self.scripts_menu.AppendSeparator()
+        self.scripts_menu.Append(wx.NewId(), "Export HTML report", "")
+
     def init_menubar(self):
-        # Models Menu
-        models_menu = wx.Menu()
-        self.new_model_menu_item = models_menu.Append(wx.NewId(), "&New\tCtrl-N", "New")
-        models_menu.Append(wx.NewId(), "&Open", "Open")
-        models_menu.Append(wx.NewId(), "&Save", "Save")
-        self.new_row_menu_item = models_menu.Append(wx.NewId(), "Add row\tCtrl-R", "Add row")
-        self.exit_menu_item = models_menu.Append(wx.NewId(), "E&xit\tCtrl-Q", "Exit")
-        # Metamodels Menu
-        metamodels_menu = wx.Menu()
-        metamodels_menu.Append(wx.NewId(), "&Import", "Import")
-        metamodels_menu.Append(wx.NewId(), "&Export", "Export")
-        metamodels_menu.AppendSeparator()
-        metamodels_menu.Append(wx.NewId(), "&MM2 (Current metamodel)", "Display Options")
-        # Scripts Menu
-        scripts_menu = wx.Menu()
-        scripts_menu.Append(wx.NewId(), "d&r", "Dangling requires")
-        scripts_menu.Append(wx.NewId(), "d&s", "Dangling supplies")
-        scripts_menu.AppendSeparator()
-        scripts_menu.Append(wx.NewId(), "Export HTML report", "")
-        # Menu Bar
-        menuBar = wx.MenuBar()
-        menuBar.Append(models_menu, "&Models")
-        menuBar.Append(metamodels_menu, "M&eta-models")
-        menuBar.Append(scripts_menu, "&Scripts")       
-        self.SetMenuBar(menuBar)
+        self.menuBar = wx.MenuBar()
+        self.menuBar.Append(self.models_menu, "&Models")
+        self.menuBar.Append(self.metamodels_menu, "M&eta-models")
+        self.menuBar.Append(self.scripts_menu, "&Scripts")       
+        self.SetMenuBar(self.menuBar)
+
+    def init_event_binding(self):
+        self.Bind(wx.EVT_MENU, self.OnCloseMe, self.exit_menu_item)
+        self.Bind(wx.EVT_MENU, self.OnNewRow, self.new_row_menu_item)
+        self.Bind(wx.EVT_MENU, self.OnNewModel, self.new_model_menu_item)
+	self.Bind(wx.EVT_TOOL, self.OnNewModel, self.new_model_toolbar_item)
 
     # Event-handlers
 
