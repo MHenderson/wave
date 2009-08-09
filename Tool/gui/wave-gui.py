@@ -5,7 +5,7 @@ import wx, images, simplegrid
 MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
 
-data = [("A", "B"), ("X", "Y")]
+data = []
 
 class WaveApp(wx.App):
     """Custom WAVE wxPython-application class."""
@@ -32,37 +32,35 @@ class MainFrame(wx.Frame):
         self.init_statusbar()
         self.init_toolbar()
         self.init_menubar()
-	self.init_grid()
 
         # Event-handling
 
         self.Bind(wx.EVT_MENU, self.OnCloseMe, self.exit_menu_item)
         self.Bind(wx.EVT_MENU, self.OnNewRow, self.new_row_menu_item)
+        self.Bind(wx.EVT_MENU, self.OnNewModel, self.new_model_menu_item)
+	self.Bind(wx.EVT_TOOL, self.OnNewModel, self.new_model_toolbar_item)
 
     # Initialization
 
     def init_panel(self):
         self.panel = wx.Panel(self)
-        self.panel.SetBackgroundColour('White')
-
-    def init_grid(self):
-	self.grid = simplegrid.SimpleGrid(self.panel, data)	
-
+	
     def init_statusbar(self):
         self.statusBar = self.CreateStatusBar()
 
     def init_toolbar(self):
         self.toolbar = self.CreateToolBar()
-        self.toolbar.AddSimpleTool(wx.NewId(), images.getNewBitmap(), "New", "Long help for 'New'")
+        self.new_model_toolbar_item = self.toolbar.AddSimpleTool(wx.NewId(), images.getNewBitmap(), "New", "Long help for 'New'")
         self.toolbar.Realize()
 
     def init_menubar(self):
         # Models Menu
         models_menu = wx.Menu()
+        self.new_model_menu_item = models_menu.Append(wx.NewId(), "&New\tCtrl-N", "New")
         models_menu.Append(wx.NewId(), "&Open", "Open")
         models_menu.Append(wx.NewId(), "&Save", "Save")
-        self.new_row_menu_item = models_menu.Append(wx.NewId(), "Add row", "Add row")
-        self.exit_menu_item = models_menu.Append(wx.NewId(), "E&xit", "Exit")
+        self.new_row_menu_item = models_menu.Append(wx.NewId(), "Add row\tCtrl-R", "Add row")
+        self.exit_menu_item = models_menu.Append(wx.NewId(), "E&xit\tCtrl-Q", "Exit")
         # Metamodels Menu
         metamodels_menu = wx.Menu()
         metamodels_menu.Append(wx.NewId(), "&Import", "Import")
@@ -90,6 +88,9 @@ class MainFrame(wx.Frame):
     def OnNewRow(self, event):
 	self.grid.AppendRows()
 	self.grid.ForceRefresh()
+
+    def OnNewModel(self, event):
+	self.grid = simplegrid.SimpleGrid(self.panel, data)
 
 if __name__ == '__main__':
     app = WaveApp()

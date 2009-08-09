@@ -31,7 +31,7 @@ class RelationTable(wx.grid.PyGridTableBase):
 class SimpleGrid(wx.grid.Grid):
 
     def __init__(self, parent, data):
-        wx.grid.Grid.__init__(self, parent, -1, wx.Point(0, 0), wx.Size(600, 600))
+        wx.grid.Grid.__init__(self, parent, -1, wx.Point(0, 0), wx.Size(600, 520))
         tableBase = RelationTable(data)
         self.SetTable(tableBase) 
 
