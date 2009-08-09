@@ -81,21 +81,19 @@ class MainFrame(wx.Frame):
         self.SetMenuBar(self.menuBar)
 
     def init_event_binding(self):
-        self.Bind(wx.EVT_MENU, self.OnCloseMe, self.exit_menu_item)
-        self.Bind(wx.EVT_MENU, self.OnNewRow, self.new_row_menu_item)
-        self.Bind(wx.EVT_MENU, self.OnNewModel, self.new_model_menu_item)
-	self.Bind(wx.EVT_TOOL, self.OnNewModel, self.new_model_toolbar_item)
+        self.Bind(wx.EVT_MENU, self.on_close, self.exit_menu_item)
+        self.Bind(wx.EVT_MENU, self.on_new_row, self.new_row_menu_item)
+        self.Bind(wx.EVT_MENU, self.on_new_model, self.new_model_menu_item)
+	self.Bind(wx.EVT_TOOL, self.on_new_model, self.new_model_toolbar_item)
 
-    # Event-handlers
-
-    def OnCloseMe(self, event):
+    def on_close(self, event):
         self.Close(True)
 
-    def OnNewRow(self, event):
+    def on_new_row(self, event):
 	self.grid.AppendRows()
 	self.grid.ForceRefresh()
 
-    def OnNewModel(self, event):
+    def on_new_model(self, event):
 	self.grid = simplegrid.SimpleGrid(self.panel, data)
 
 if __name__ == '__main__':
