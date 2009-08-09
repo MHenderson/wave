@@ -28,6 +28,12 @@ class RelationTable(wx.grid.PyGridTableBase):
 	current_tuple = self.entries[row]
 	self.entries[row] = current_tuple[:col] + (value,) + current_tuple[col+1:]
 
+    def AppendRows(self, num_of_rows = 1):
+	self.entries.append((0,0))
+
+    def DeleteRows(self, num_of_rows = 1):
+	self.entries.pop()
+
 class SimpleGrid(wx.grid.Grid):
 
     def __init__(self, parent, data):
@@ -36,8 +42,10 @@ class SimpleGrid(wx.grid.Grid):
         self.SetTable(tableBase) 
 
     def AppendRows(self, num_of_rows = 1):
-	data = self.GetTable().entries
-	data.append((0,0))
-	new_table = RelationTable(data)
-	self.SetTable(new_table) 
+	self.GetTable().AppendRows()
+	self.SetTable(self.GetTable()) 
+
+    def DeleteRows(self, pos = 0, numRows = 1, updateLabels = False):
+	self.GetTable().DeleteRows()
+	self.SetTable(self.GetTable()) 
 

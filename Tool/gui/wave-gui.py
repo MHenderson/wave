@@ -57,6 +57,7 @@ class MainFrame(wx.Frame):
         self.models_menu.Append(wx.NewId(), "&Open", "Open")
         self.models_menu.Append(wx.NewId(), "&Save", "Save")
         self.new_row_menu_item = self.models_menu.Append(wx.NewId(), "Add row\tCtrl-R", "Add row")
+        self.delete_row_menu_item = self.models_menu.Append(wx.NewId(), "Delete row\tCtrl-X", "Delete row")
         self.exit_menu_item = self.models_menu.Append(wx.NewId(), "E&xit\tCtrl-Q", "Exit")
 
     def init_metamodels_menu(self):
@@ -85,6 +86,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_new_row, self.new_row_menu_item)
         self.Bind(wx.EVT_MENU, self.on_new_model, self.new_model_menu_item)
 	self.Bind(wx.EVT_TOOL, self.on_new_model, self.new_model_toolbar_item)
+        self.Bind(wx.EVT_MENU, self.on_delete_row, self.delete_row_menu_item)
 
     def on_close(self, event):
         self.Close(True)
@@ -95,6 +97,10 @@ class MainFrame(wx.Frame):
 
     def on_new_model(self, event):
 	self.grid = simplegrid.SimpleGrid(self.panel, data)
+
+    def on_delete_row(self, event):
+	self.grid.DeleteRows()
+	self.grid.ForceRefresh()
 
 if __name__ == '__main__':
     app = WaveApp()
