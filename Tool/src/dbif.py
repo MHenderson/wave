@@ -184,3 +184,62 @@ existing tables. I need this for the CGI script only."""
     for (table, expr) in vtables:
         exec table + ' = ' + expr
         put(table, eval(table))
+
+def collect(r):
+    return [(t[0],frozenset(join([(t[0],)],r))) for t in dom(r)]
+
+def subjoin(r1,r2):
+    return [t1[0:-1]+t2[1:] for t1 in r1 for t2 in r2 if inc(t1[-1],t2[0])]
+
+#  dbifXML (copied, modified to avoid eval/exec)
+
+import xml.dom.minidom
+import xml.sax.saxutils
+
+#putTables - take list of tables and create an XML file
+#getTables - read XML file that contains a database and construct tables
+
+stylesheet=""
+def setStylesheet(ss):
+     global stylesheet
+     stylesheet=ss
+
+def putTables(fn,Tdic):
+    doc=open(fn,'w');
+    doc.write("""<?xml version="1.0" encoding="utf-8"?>""")
+    if stylesheet!="":
+         doc.write('<?xml-stylesheet type="text/xsl" href="'+stylesheet+'"?>')
+    doc.write("<dbifDatabase>")
+    for Tname,T in Tdic.items():
+        doc.write('<dbifTable name="'+Tname+'">')
+        for r in T:
+            doc.write("<dbifRow>")
+            for e in r:
+                doc.write("<dbifEl>"+xml.sax.saxutils.escape(e)+"</dbifEl>")
+            doc.write("</dbifRow>")
+        doc.write("</dbifTable>")
+    doc.write("</dbifDatabase>"); doc.close()
+
+def getTables(fn):
+    document=open(fn); Tdic={}
+    doc = xml.dom.minidom.parse(document)
+    elem=doc.childNodes[-1]
+    Tables=elem.getElementsByTagName("dbifTable"); tables=[]
+    for T in Tables:
+        Tname=T.getAttribute("name"); tables=tables+[Tname]
+        Rows=T.getElementsByTagName("dbifRow"); table=[]
+        for r in Rows:
+            els=r.getElementsByTagName("dbifEl"); row=tuple()
+            for el in els:
+                 if el.hasChildNodes():
+                      row=row+(xml.sax.saxutils.unescape(el.firstChild.nodeValue),)
+                 else: row=row+(" ",)
+            table=table+[row]
+        Tdic[safestr(Tname)]=deUnicode(table)
+    return Tdic
+    
+def safestr(u):
+    try: return str(u)
+    except: return "?"
+def deUnicode(T):
+    return [tuple(safestr(e) for e in t) for t in T]
