@@ -69,6 +69,7 @@ class MainFrame(wx.Frame):
         
     def init_scripts_menu(self):
         self.scripts_menu = wx.Menu()
+        self.invert_menu_item = self.scripts_menu.Append(wx.NewId(), "Invert", "Invert")
         self.scripts_menu.Append(wx.NewId(), "d&r", "Dangling requires")
         self.scripts_menu.Append(wx.NewId(), "d&s", "Dangling supplies")
         self.scripts_menu.AppendSeparator()
@@ -87,6 +88,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_new_model, self.new_model_menu_item)
 	self.Bind(wx.EVT_TOOL, self.on_new_model, self.new_model_toolbar_item)
         self.Bind(wx.EVT_MENU, self.on_delete_row, self.delete_row_menu_item)
+        self.Bind(wx.EVT_MENU, self.on_invert, self.invert_menu_item)
 
     def on_close(self, event):
         self.Close(True)
@@ -100,6 +102,10 @@ class MainFrame(wx.Frame):
 
     def on_delete_row(self, event):
 	self.grid.DeleteRows()
+	self.grid.ForceRefresh()
+
+    def on_invert(self, event):
+	self.grid.Invert()
 	self.grid.ForceRefresh()
 
 if __name__ == '__main__':
