@@ -1,0 +1,22 @@
+1. Creating a new model.
+
+ Bob selects the "New" option from the "Models" menu (alternatively, he can click on the "New" icon of the "Models" toolbar or use the Ctrl-N accelerator). 
+
+ If no models are currently open in WAVE then an empty grid (dimensions?) appears on the main panel of the WAVE window. If a model is already open then a new tab appears containing an empty grid control.
+
+2. Editing a model.
+
+ 2a. Adding new relations.
+
+  - Bob selects the "Add row" option from "Edit" submenu of the "Models" menu. A new row appears at the bottom of the current table.
+
+  - Bob selects the "New relation" option from the "Edit" submenu of the "Models" menu. A dialog appears with a text-box. Bob enters his new relation into the text-box as a tuple and selects "OK" or hits enter. A new row appears at the bottom of the current table.
+
+ 2b. Removing existing relations.
+
+ 2c. Modifying existing relations.
+
+3. Validation of a model against a meta-model.
+
+4. Producing a report.
+
