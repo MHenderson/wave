@@ -34,8 +34,8 @@ class RelationTable(wx.grid.PyGridTableBase):
     def DeleteRows(self, num_of_rows = 1):
 	self.entries.pop()
 
-    def Invert(self):
-	self.entries = dbif.invert(self.entries)
+    def apply_dbif_operation(self, operation_name):
+	self.entries = operation_name(self.entries)
 
 class SimpleGrid(wx.grid.Grid):
 
@@ -52,7 +52,7 @@ class SimpleGrid(wx.grid.Grid):
 	self.GetTable().DeleteRows()
 	self.SetTable(self.GetTable()) 
 
-    def Invert(self):
-	self.GetTable().Invert()
+    def apply_dbif_operation(self, operation_name):
+	self.GetTable().apply_dbif_operation(operation_name)
 	self.SetTable(self.GetTable())
 

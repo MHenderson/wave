@@ -1,6 +1,6 @@
 #!/usr/bin/env python
  
-import wx, images, simplegrid
+import wx, images, simplegrid, dbif
 
 MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
@@ -48,6 +48,7 @@ class MainFrame(wx.Frame):
     def init_menus(self):
 	self.init_models_menu()
 	self.init_metamodels_menu()
+	self.init_operations_menu()
 	self.init_scripts_menu()
 	self.init_menubar()
 
@@ -66,10 +67,15 @@ class MainFrame(wx.Frame):
         self.metamodels_menu.Append(wx.NewId(), "&Export", "Export")
         self.metamodels_menu.AppendSeparator()
         self.metamodels_menu.Append(wx.NewId(), "&MM2 (Current metamodel)", "Display Options")
+
+    def init_operations_menu(self):
+	self.operations_menu = wx.Menu()
+        self.invert_menu_item = self.operations_menu.Append(wx.NewId(), "Invert\tCtrl-`", "Invert")
+        self.closure_menu_item = self.operations_menu.Append(wx.NewId(), "Closure", "Transitive closure.")
+
         
     def init_scripts_menu(self):
         self.scripts_menu = wx.Menu()
-        self.invert_menu_item = self.scripts_menu.Append(wx.NewId(), "Invert", "Invert")
         self.scripts_menu.Append(wx.NewId(), "d&r", "Dangling requires")
         self.scripts_menu.Append(wx.NewId(), "d&s", "Dangling supplies")
         self.scripts_menu.AppendSeparator()
@@ -79,6 +85,7 @@ class MainFrame(wx.Frame):
         self.menuBar = wx.MenuBar()
         self.menuBar.Append(self.models_menu, "&Models")
         self.menuBar.Append(self.metamodels_menu, "M&eta-models")
+        self.menuBar.Append(self.operations_menu, "&Operations")       
         self.menuBar.Append(self.scripts_menu, "&Scripts")       
         self.SetMenuBar(self.menuBar)
 
@@ -89,6 +96,7 @@ class MainFrame(wx.Frame):
 	self.Bind(wx.EVT_TOOL, self.on_new_model, self.new_model_toolbar_item)
         self.Bind(wx.EVT_MENU, self.on_delete_row, self.delete_row_menu_item)
         self.Bind(wx.EVT_MENU, self.on_invert, self.invert_menu_item)
+        self.Bind(wx.EVT_MENU, self.on_closure, self.closure_menu_item)
 
     def on_close(self, event):
         self.Close(True)
@@ -105,7 +113,11 @@ class MainFrame(wx.Frame):
 	self.grid.ForceRefresh()
 
     def on_invert(self, event):
-	self.grid.Invert()
+	self.grid.apply_dbif_operation(dbif.invert)
+	self.grid.ForceRefresh()
+
+    def on_closure(self, event):
+	self.grid.apply_dbif_operation(dbif.close)
 	self.grid.ForceRefresh()
 
 if __name__ == '__main__':
