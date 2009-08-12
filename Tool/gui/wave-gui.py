@@ -7,6 +7,15 @@ MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
 
 data = []
 
+class WaveSession():
+    """WAVE session class."""
+
+    def __init__(self):
+	self.tables = {}
+
+    def add_new_named_table(self, name):
+	self.tables[name] = []
+
 class WaveApp(wx.App):
     """Custom WAVE wxPython-application class."""
 
@@ -32,6 +41,7 @@ class MainFrame(wx.Frame):
 
     def __init__(self, parent, id):
         wx.Frame.__init__(self, parent, id, title = MAIN_FRAME_TITLE, size = MAIN_FRAME_SIZE)
+	self.init_session()
         self.init_panel()
 	self.init_notebook()
         self.init_statusbar()
@@ -39,11 +49,15 @@ class MainFrame(wx.Frame):
         self.init_menus()
 	self.init_event_binding()
 
+    def init_session(self):
+	self.session = WaveSession()
+
     def init_panel(self):
         self.panel = wx.Panel(self)
 
     def init_notebook(self):
         self.notebook = wx.Notebook(self.panel)
+	self.pages = []
 	sizer = wx.BoxSizer()
         sizer.Add(self.notebook, 1, wx.EXPAND)
         self.panel.SetSizer(sizer)
@@ -117,9 +131,14 @@ class MainFrame(wx.Frame):
 	self.grid.ForceRefresh()
 
     def on_new_model(self, event):
-        self.page1 = WaveTab(self.notebook)
-        self.notebook.AddPage(self.page1, "Contains")	
-	self.grid = simplegrid.SimpleGrid(self.page1, data)
+	dialog_results = wx.TextEntryDialog(None, "Enter name for new relation table:",'Relation name', 'New relation')
+	if dialog_results.ShowModal() == wx.ID_OK:
+            name = dialog_results.GetValue()
+        dialog_results.Destroy()
+	self.session.add_new_named_table(name)
+        self.pages.append(WaveTab(self.notebook))
+        self.notebook.AddPage(self.pages[-1], name)
+	self.grid = simplegrid.SimpleGrid(self.pages[-1], self.session.tables[name])
 
     def on_delete_row(self, event):
 	self.grid.DeleteRows()
