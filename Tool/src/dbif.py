@@ -7,13 +7,7 @@ HOST = "localhost"
 DATABASE = "test"
 DEBUGGING = False
 
-"""In the following, it is important to distinguish between a mySQL table
-and a dbif-table. A mySQL table is a table in the mySQL database. A dbif-table
-is a list of tuples of strings (there should be no duplicate tuples). Alloy
-refers to a multi-relation, i.e. a set of n-tuples where n can be any
-integer, not just 2. A dbif-table is the Python structure used for multi-relation.
-Some functions move tables between mySQL and Python, others operate only on
-dbif-tables"""
+"""In the following, it is important to distinguish between a mySQL table and a dbif-table. A mySQL table is a table in the mySQL database. A dbif-table is a list of tuples of strings (there should be no duplicate tuples). Alloy refers to a multi-relation, i.e. a set of n-tuples where n can be any integer, not just 2. A dbif-table is the Python structure used for multi-relation. Some functions move tables between mySQL and Python, others operate only on dbif-tables"""
 
 def use(db):
     """Use a database."""
@@ -74,20 +68,15 @@ def restore(table):
     put(table, get('saved_' + table))
 
 def join(r1,r2): 
-    """This is dot join from Alloy. Both arguments are dbif-tables, as is the
-result. Tuples are joined when the last element of a tuple from r1 is equal to
-the first element of a tuple from r2. The common element is dropped."""
+    """This is dot join from Alloy. Both arguments are dbif-tables, as is the result. Tuples are joined when the last element of a tuple from r1 is equal to the first element of a tuple from r2. The common element is dropped."""
     return [t1[0:-1] + t2[1:] for t1 in r1 for t2 in r2 if t1[-1] == t2[0]]
 
 def join2(r1,r2):
-    """This is circle-dot join from Alloy. Both arguments are dbif-tables, as is the
-result. Tuples are joined when the last element of a tuple from r1 is equal to
-the first element of a tuple from r2. The common element is retained."""
+    """This is circle-dot join from Alloy. Both arguments are dbif-tables, as is the result. Tuples are joined when the last element of a tuple from r1 is equal to the first element of a tuple from r2. The common element is retained."""
     return [t1[0:-1] + t2[0:] for t1 in r1 for t2 in r2 if t1[-1] == t2[0]]
     
 def invert(r): 
-    """This is twiddle from Alloy. All tuples in the dbif-table r
-are reversed"""
+    """This is twiddle from Alloy. All tuples in the dbif-table r are reversed"""
     return [t[-1::-1] for t in  r]
 
 def setify(t):
@@ -103,16 +92,11 @@ def ran(r):
     return setify([(t[-1],) for t in r])
 
 def dr(s,r):
-    """Alloy operator <: - Domain-restrict a relation. First argument is a 'set' (a dbif-table with
-tuples of length 1. Second argument is a dbif-table. Result is a dbif-table,
-same as r but with first column entries restriced to elements in s."""
+    """Alloy operator <: - Domain-restrict a relation. First argument is a 'set' (a dbif-table with tuples of length 1. Second argument is a dbif-table. Result is a dbif-table, same as r but with first column entries restriced to elements in s."""
     return setify([t for t in r if (t[0],) in s])
 
 def rr(r,s):
-    """Alloy operator :> - Range-restrict a relation. First argument is a
-dbif-table. Second argument is a 'set' (a dbif-table with
-tuples of length 1. Result is a dbif-table,
-same as r but with last column entries restriced to elements in s."""
+    """Alloy operator :> - Range-restrict a relation. First argument is a dbif-table. Second argument is a 'set' (a dbif-table with tuples of length 1. Result is a dbif-table, same as r but with last column entries restriced to elements in s."""
     return setify([t for t in r if (t[-1],) in s])
 
 def close(r):
@@ -125,14 +109,11 @@ def close(r):
     return res
 
 def inc(r1,r2):
-    """Arguments are dbif-tables. Result is Boolean. True if r1 is a
-subset of r2. Implements Alloy operator 'in' (which is both subset and membership
--test, see book)"""
+    """Arguments are dbif-tables. Result is Boolean. True if r1 is a subset of r2. Implements Alloy operator 'in' (which is both subset and membership-test, see book)"""
     return all((t in r2) for t in r1)
 
 def iden(r):
-    """Implements Alloy constant 'iden' as best as possible. returns Identity
-relation whose basis is all the elements used by the dbif-table r."""
+    """Implements Alloy constant 'iden' as best as possible. returns Identity relation whose basis is all the elements used by the dbif-table r."""
     return [(a,a) for a in setify([a for t in r for a in t])]
 
 def prn(a):
@@ -158,23 +139,15 @@ def prod(t1, t2):
     return [a + b for a in t1 for b in t2]
 
 def proj(t1, p):
-    """Project columns of a relation (a dbif table) t1. The second argument is a
-tuple of integers which are column numbers used to permute the entries
-in t1."""
+    """Project columns of a relation (a dbif table) t1. The second argument is a tuple of integers which are column numbers used to permute the entries in t1."""
     return list(set([tuple(a[i] for i in p) for a in t1]))
 
 def sel(t1, p):
-    """Select rows of a relation (a dbif table) t1. The second argument is a
-Python expression with free variable 'r' which computes a Boolean value for each
-row in t1. Rows selected atre those for which p returns true."""
+    """Select rows of a relation (a dbif table) t1. The second argument is a Python expression with free variable 'r' which computes a Boolean value for each row in t1. Rows selected atre those for which p returns true."""
     return list(set([a for a in t1 if eval(p,{'r':a})]))
 
 def recompute():
-    """Used only by a crafty mySQL 'trick'. Database must have a table
-called 'vtable' whose enties are table names and Python expressions that
-construct dbif-tables. Calling recompute creates new 'real' tables in
-the database corresponding to the entries in vtable. Will overwrite any
-existing tables. I need this for the CGI script only."""
+    """Used only by a crafty mySQL 'trick'. Database must have a table called 'vtable' whose enties are table names and Python expressions that construct dbif-tables. Calling recompute creates new 'real' tables in the database corresponding to the entries in vtable. Will overwrite any existing tables. I need this for the CGI script only."""
     try:
         vtables = get("vtable")
     except:
