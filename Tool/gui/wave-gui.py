@@ -5,8 +5,6 @@ import wx, images, simplegrid, dbif
 MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
 
-data = []
-
 class WaveSession():
     """WAVE session class."""
 
@@ -119,12 +117,17 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_invert, self.invert_menu_item)
         self.Bind(wx.EVT_MENU, self.on_closure, self.closure_menu_item)
 
+    def current_grid(self):
+        children = self.notebook.GetCurrentPage().GetChildren()
+        return children[0]
+
     def on_close(self, event):
         self.Close(True)
 
     def on_new_row(self, event):
-        self.grid.AppendRows()
-        self.grid.ForceRefresh()
+        grid = self.current_grid()
+        grid.AppendRows()
+        grid.ForceRefresh()
 
     def on_new_model(self, event):
         dialog_results = wx.TextEntryDialog(None, "Enter name for new relation table:",'Relation name', 'New relation')
@@ -137,16 +140,19 @@ class MainFrame(wx.Frame):
         self.grid = simplegrid.SimpleGrid(self.pages[-1], self.session.tables[name])
 
     def on_delete_row(self, event):
-        self.grid.DeleteRows()
-        self.grid.ForceRefresh()
+        grid = self.current_grid()
+        grid.DeleteRows()
+        grid.ForceRefresh()
 
     def on_invert(self, event):
-        self.grid.apply_dbif_operation(dbif.invert)
-        self.grid.ForceRefresh()
+        grid = self.current_grid()
+        grid.apply_dbif_operation(dbif.invert)
+        grid.ForceRefresh()
 
     def on_closure(self, event):
-        self.grid.apply_dbif_operation(dbif.close)
-        self.grid.ForceRefresh()
+        grid = self.current_grid()
+        grid.apply_dbif_operation(dbif.close)
+        grid.ForceRefresh()
 
 if __name__ == '__main__':
     app = WaveApp()
