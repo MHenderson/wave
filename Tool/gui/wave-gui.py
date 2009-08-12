@@ -32,10 +32,6 @@ class WaveApp(wx.App):
         self.SetTopWindow(frame)
         return True
 
-class WaveTab(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
-
 class MainFrame(wx.Frame):
     """Custom WAVE top-level window class."""
 
@@ -136,7 +132,7 @@ class MainFrame(wx.Frame):
             name = dialog_results.GetValue()
         dialog_results.Destroy()
         self.session.add_new_named_table(name)
-        self.pages.append(WaveTab(self.notebook))
+        self.pages.append(wx.Panel(self.notebook))
         self.notebook.AddPage(self.pages[-1], name)
         self.grid = simplegrid.SimpleGrid(self.pages[-1], self.session.tables[name])
 
