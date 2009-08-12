@@ -23,12 +23,17 @@ class WaveApp(wx.App):
 	self.SetTopWindow(frame)
         return True
 
+class WaveTab(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent)
+
 class MainFrame(wx.Frame):
     """Custom WAVE top-level window class."""
 
     def __init__(self, parent, id):
         wx.Frame.__init__(self, parent, id, title = MAIN_FRAME_TITLE, size = MAIN_FRAME_SIZE)
         self.init_panel()
+	self.init_notebook()
         self.init_statusbar()
         self.init_toolbar()
         self.init_menus()
@@ -36,7 +41,13 @@ class MainFrame(wx.Frame):
 
     def init_panel(self):
         self.panel = wx.Panel(self)
-	
+
+    def init_notebook(self):
+        self.notebook = wx.Notebook(self.panel)
+	sizer = wx.BoxSizer()
+        sizer.Add(self.notebook, 1, wx.EXPAND)
+        self.panel.SetSizer(sizer)
+
     def init_statusbar(self):
         self.statusBar = self.CreateStatusBar()
 
@@ -106,7 +117,9 @@ class MainFrame(wx.Frame):
 	self.grid.ForceRefresh()
 
     def on_new_model(self, event):
-	self.grid = simplegrid.SimpleGrid(self.panel, data)
+        self.page1 = WaveTab(self.notebook)
+        self.notebook.AddPage(self.page1, "Contains")	
+	self.grid = simplegrid.SimpleGrid(self.page1, data)
 
     def on_delete_row(self, event):
 	self.grid.DeleteRows()
