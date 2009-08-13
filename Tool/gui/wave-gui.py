@@ -1,6 +1,6 @@
 #!/usr/bin/env python
  
-import wx, images, simplegrid, dbif
+import wx, images, simplegrid, dbif, MM2
 
 MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
@@ -108,7 +108,7 @@ class MainFrame(wx.Frame):
 
     def init_scripts_menu(self):
         self.scripts_menu = wx.Menu()
-        self.scripts_menu.Append(wx.NewId(), "d&r", "Dangling requires")
+        self.dr_menu_item = self.scripts_menu.Append(wx.NewId(), "d&r", "Dangling requires")
         self.scripts_menu.Append(wx.NewId(), "d&s", "Dangling supplies")
         self.scripts_menu.AppendSeparator()
         self.scripts_menu.Append(wx.NewId(), "Export HTML report", "")
@@ -131,6 +131,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_closure, self.closure_menu_item)
         self.Bind(wx.EVT_MENU, self.on_join, self.join_menu_item)
         self.Bind(wx.EVT_MENU, self.on_diff, self.diff_menu_item)
+        self.Bind(wx.EVT_MENU, self.on_dr, self.dr_menu_item)
 
     def current_grid(self):
         children = self.notebook.GetCurrentPage().GetChildren()
@@ -182,15 +183,25 @@ class MainFrame(wx.Frame):
     def on_join(self, event):
         grid1 = self.select_grid()
         grid2 = self.select_grid()
-        table = simplegrid.apply_dbif_operation(dbif.join, grid1, grid2)
-        table.name = grid1.name + '.' + grid2.name
+        name = grid1.name + '.' + grid2.name	
+        table = simplegrid.apply_dbif_operation(dbif.join, grid1, grid2, name)
         self.notebook.new_page(table)
 
     def on_diff(self, event):
         grid1 = self.select_grid()
         grid2 = self.select_grid()
-        table = simplegrid.apply_dbif_operation(dbif.diff, grid1, grid2)
-        table.name = grid1.name + ' - ' + grid2.name
+        name = grid1.name + ' - ' + grid2.name	
+        table = simplegrid.apply_dbif_operation(dbif.diff, grid1, grid2, name)
+        self.notebook.new_page(table)
+
+    def on_dr(self, event):
+        grid1 = self.select_grid()
+        grid2 = self.select_grid()
+        grid3 = self.select_grid()
+        contains = grid1.GetTable().entries
+        requires = grid2.GetTable().entries
+        supplies = grid3.GetTable().entries
+        table = simplegrid.RelationTable(MM2.dr(contains, requires, supplies), 'dangling requires')
         self.notebook.new_page(table)
 
 if __name__ == '__main__':
