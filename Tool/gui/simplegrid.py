@@ -2,9 +2,10 @@ import wx, wx.grid, dbif
             
 class RelationTable(wx.grid.PyGridTableBase):
     
-    def __init__(self, entries):
+    def __init__(self, entries, name):
 	wx.grid.PyGridTableBase.__init__(self)
 	self.entries = entries
+	self.name = name
 	
     def GetNumberRows(self):
 	return len(self.entries)
@@ -39,10 +40,9 @@ class RelationTable(wx.grid.PyGridTableBase):
 
 class SimpleGrid(wx.grid.Grid):
 
-    def __init__(self, parent, data):
+    def __init__(self, parent, table):
         wx.grid.Grid.__init__(self, parent, -1, wx.Point(0, 0), wx.Size(600, 520))
-        tableBase = RelationTable(data)
-        self.SetTable(tableBase) 
+        self.SetTable(table) 
 
     def AppendRows(self, num_of_rows = 1):
 	self.GetTable().AppendRows()
@@ -52,7 +52,7 @@ class SimpleGrid(wx.grid.Grid):
 	self.GetTable().DeleteRows()
 	self.SetTable(self.GetTable()) 
 
-    def apply_dbif_operation(self, operation_name):
-	self.GetTable().apply_dbif_operation(operation_name)
+    def apply_dbif_operation(self, operation):
+	self.GetTable().apply_dbif_operation(operation)
 	self.SetTable(self.GetTable())
 

@@ -9,10 +9,10 @@ class WaveSession():
     """WAVE session class."""
 
     def __init__(self):
-        self.tables = {}
+        self.tables = [] 
 
-    def add_new_named_table(self, name):
-        self.tables[name] = []
+    def add_new_table(self, table):
+        self.tables.append(table)
 
 class WaveApp(wx.App):
     """Custom WAVE wxPython-application class."""
@@ -134,10 +134,11 @@ class MainFrame(wx.Frame):
         if dialog_results.ShowModal() == wx.ID_OK:
             name = dialog_results.GetValue()
         dialog_results.Destroy()
-        self.session.add_new_named_table(name)
+        table = simplegrid.RelationTable([], name)
+        self.session.add_new_table(table)
         self.pages.append(wx.Panel(self.notebook))
         self.notebook.AddPage(self.pages[-1], name)
-        self.grid = simplegrid.SimpleGrid(self.pages[-1], self.session.tables[name])
+        self.grid = simplegrid.SimpleGrid(self.pages[-1], table)
 
     def on_delete_row(self, event):
         grid = self.current_grid()
