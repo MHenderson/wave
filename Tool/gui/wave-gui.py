@@ -103,6 +103,8 @@ class MainFrame(wx.Frame):
         self.invert_menu_item = self.operations_menu.Append(wx.NewId(), "Invert\tCtrl-`", "Invert")
         self.closure_menu_item = self.operations_menu.Append(wx.NewId(), "Closure", "Transitive closure.")
         self.join_menu_item = self.operations_menu.Append(wx.NewId(), "Join", "Join.")
+        self.diff_menu_item = self.operations_menu.Append(wx.NewId(), "Diff", "Difference.")
+
 
     def init_scripts_menu(self):
         self.scripts_menu = wx.Menu()
@@ -128,6 +130,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_invert, self.invert_menu_item)
         self.Bind(wx.EVT_MENU, self.on_closure, self.closure_menu_item)
         self.Bind(wx.EVT_MENU, self.on_join, self.join_menu_item)
+        self.Bind(wx.EVT_MENU, self.on_diff, self.diff_menu_item)
 
     def current_grid(self):
         children = self.notebook.GetCurrentPage().GetChildren()
@@ -165,12 +168,29 @@ class MainFrame(wx.Frame):
         grid.apply_dbif_operation(dbif.close)
         grid.ForceRefresh()
 
+    def select_grid(self):
+        no_of_pages = self.notebook.GetPageCount()
+        pages = [self.notebook.GetPage(i) for i in range(no_of_pages)]
+        children = [page.GetChildren() for page in pages]
+        grids = [child[0] for child in children]
+        choices = [grid.name for grid in grids]
+        dialog_results = wx.SingleChoiceDialog ( None, 'Pick something....', 'Dialog Title', choices )
+        if dialog_results.ShowModal() == wx.ID_OK:
+            position = dialog_results.GetSelection()
+        return grids[position]
+
     def on_join(self, event):
-        page0 = self.notebook.GetPage(0).GetChildren()
-        page1 = self.notebook.GetPage(1).GetChildren()
-        grid1 = page0[0]
-        grid2 = page1[0]
+        grid1 = self.select_grid()
+        grid2 = self.select_grid()
         table = simplegrid.apply_dbif_operation(dbif.join, grid1, grid2)
+        table.name = grid1.name + '.' + grid2.name
+        self.notebook.new_page(table)
+
+    def on_diff(self, event):
+        grid1 = self.select_grid()
+        grid2 = self.select_grid()
+        table = simplegrid.apply_dbif_operation(dbif.diff, grid1, grid2)
+        table.name = grid1.name + ' - ' + grid2.name
         self.notebook.new_page(table)
 
 if __name__ == '__main__':
