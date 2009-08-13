@@ -35,8 +35,8 @@ class RelationTable(wx.grid.PyGridTableBase):
     def DeleteRows(self, num_of_rows = 1):
 	self.entries.pop()
 
-    def apply_dbif_operation(self, operation_name):
-	self.entries = operation_name(self.entries)
+    def apply_dbif_operation(self, operation):
+        self.entries = operation(self.entries)
 
 class SimpleGrid(wx.grid.Grid):
 
@@ -53,6 +53,15 @@ class SimpleGrid(wx.grid.Grid):
 	self.SetTable(self.GetTable()) 
 
     def apply_dbif_operation(self, operation):
-	self.GetTable().apply_dbif_operation(operation)
-	self.SetTable(self.GetTable())
+        self.GetTable().apply_dbif_operation(operation)
+        self.SetTable(self.GetTable())
+
+def apply_dbif_operation(operation, grid1, grid2):
+    table1 = grid1.GetTable()
+    table2 = grid2.GetTable()
+    entries1 = table1.entries
+    entries2 = table2.entries
+    result_entries = operation(entries1, entries2)
+    result_table = RelationTable(result_entries, 'result')
+    return result_table
 

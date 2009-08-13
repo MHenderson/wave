@@ -14,6 +14,18 @@ class WaveSession():
     def add_new_table(self, table):
         self.tables.append(table)
 
+class WaveNotebook(wx.Notebook):
+    """Custom WAVE wxPython-Notebook class."""
+
+    def __init__(self, parent):
+        wx.Notebook.__init__(self, parent)
+        self.pages = []
+
+    def new_page(self, table):
+        self.pages.append(wx.Panel(self))
+        self.AddPage(self.pages[-1], table.name)
+        self.grid = simplegrid.SimpleGrid(self.pages[-1], table)
+
 class WaveApp(wx.App):
     """Custom WAVE wxPython-application class."""
 
@@ -50,8 +62,7 @@ class MainFrame(wx.Frame):
         self.panel = wx.Panel(self)
 
     def init_notebook(self):
-        self.notebook = wx.Notebook(self.panel)
-        self.pages = []
+        self.notebook = WaveNotebook(self.panel)
         sizer = wx.BoxSizer()
         sizer.Add(self.notebook, 1, wx.EXPAND)
         self.panel.SetSizer(sizer)
@@ -91,8 +102,8 @@ class MainFrame(wx.Frame):
         self.operations_menu = wx.Menu()
         self.invert_menu_item = self.operations_menu.Append(wx.NewId(), "Invert\tCtrl-`", "Invert")
         self.closure_menu_item = self.operations_menu.Append(wx.NewId(), "Closure", "Transitive closure.")
+        self.join_menu_item = self.operations_menu.Append(wx.NewId(), "Join", "Join.")
 
-        
     def init_scripts_menu(self):
         self.scripts_menu = wx.Menu()
         self.scripts_menu.Append(wx.NewId(), "d&r", "Dangling requires")
@@ -116,6 +127,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_delete_row, self.delete_row_menu_item)
         self.Bind(wx.EVT_MENU, self.on_invert, self.invert_menu_item)
         self.Bind(wx.EVT_MENU, self.on_closure, self.closure_menu_item)
+        self.Bind(wx.EVT_MENU, self.on_join, self.join_menu_item)
 
     def current_grid(self):
         children = self.notebook.GetCurrentPage().GetChildren()
@@ -135,10 +147,8 @@ class MainFrame(wx.Frame):
             name = dialog_results.GetValue()
         dialog_results.Destroy()
         table = simplegrid.RelationTable([], name)
-        self.session.add_new_table(table)
-        self.pages.append(wx.Panel(self.notebook))
-        self.notebook.AddPage(self.pages[-1], name)
-        self.grid = simplegrid.SimpleGrid(self.pages[-1], table)
+        self.session.add_new_table(table)	
+        self.notebook.new_page(table)
 
     def on_delete_row(self, event):
         grid = self.current_grid()
@@ -154,6 +164,14 @@ class MainFrame(wx.Frame):
         grid = self.current_grid()
         grid.apply_dbif_operation(dbif.close)
         grid.ForceRefresh()
+
+    def on_join(self, event):
+        page0 = self.notebook.GetPage(0).GetChildren()
+        page1 = self.notebook.GetPage(1).GetChildren()
+        grid1 = page0[0]
+        grid2 = page1[0]
+        table = simplegrid.apply_dbif_operation(dbif.join, grid1, grid2)
+        self.notebook.new_page(table)
 
 if __name__ == '__main__':
     app = WaveApp()
