@@ -57,12 +57,10 @@ class SimpleGrid(wx.grid.Grid):
         self.GetTable().apply_dbif_operation(operation)
         self.SetTable(self.GetTable())
 
-def apply_dbif_operation(operation, grid1, grid2, name):
-    table1 = grid1.GetTable()
-    table2 = grid2.GetTable()
-    entries1 = table1.entries
-    entries2 = table2.entries
-    result_entries = operation(entries1, entries2)
-    result_table = RelationTable(result_entries, name)
+def apply_dbif_operation(operation, *grids, **keypar):
+    r_tables = [grid.GetTable() for grid in grids]
+    tables = [r_table.entries for r_table in r_tables]
+    result_entries = operation(*tables)
+    result_table = RelationTable(result_entries, keypar['name'])
     return result_table
 

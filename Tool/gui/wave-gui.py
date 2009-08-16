@@ -183,25 +183,23 @@ class MainFrame(wx.Frame):
     def on_join(self, event):
         grid1 = self.select_grid()
         grid2 = self.select_grid()
-        name = grid1.name + '.' + grid2.name	
-        table = simplegrid.apply_dbif_operation(dbif.join, grid1, grid2, name)
+        table_name = grid1.name + '.' + grid2.name	
+        table = simplegrid.apply_dbif_operation(dbif.join, grid1, grid2, name = table_name)
         self.notebook.new_page(table)
 
     def on_diff(self, event):
         grid1 = self.select_grid()
         grid2 = self.select_grid()
-        name = grid1.name + ' - ' + grid2.name	
-        table = simplegrid.apply_dbif_operation(dbif.diff, grid1, grid2, name)
+        table_name = grid1.name + ' - ' + grid2.name	
+        table = simplegrid.apply_dbif_operation(dbif.diff, grid1, grid2, name = table_name)
         self.notebook.new_page(table)
 
     def on_dr(self, event):
         grid1 = self.select_grid()
         grid2 = self.select_grid()
         grid3 = self.select_grid()
-        contains = grid1.GetTable().entries
-        requires = grid2.GetTable().entries
-        supplies = grid3.GetTable().entries
-        table = simplegrid.RelationTable(MM2.dr(contains, requires, supplies), 'dangling requires')
+        table_name = 'dangling requires'
+        table = simplegrid.apply_dbif_operation(MM2.dr, grid1, grid2, grid3, name = table_name)
         self.notebook.new_page(table)
 
 if __name__ == '__main__':
