@@ -4,3 +4,4 @@
 *.swp
 Tool/gui/build
 Tool/gui/dist
+Tool/gui/src/Wave.egg-info
