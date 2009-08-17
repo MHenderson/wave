@@ -1,6 +1,8 @@
 #!/usr/bin/env python
  
-import wx, images, simplegrid, dbif, MM2
+import wx, sys
+import Wave
+from Wave import images, dbif, grid, MM2
 
 MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
@@ -24,7 +26,7 @@ class WaveNotebook(wx.Notebook):
     def new_page(self, table):
         self.pages.append(wx.Panel(self))
         self.AddPage(self.pages[-1], table.name)
-        self.grid = simplegrid.SimpleGrid(self.pages[-1], table)
+        self.grid = Wave.grid.WaveGrid(self.pages[-1], table)
 
 class WaveApp(wx.App):
     """Custom WAVE wxPython-application class."""
@@ -72,7 +74,7 @@ class MainFrame(wx.Frame):
 
     def init_toolbar(self):
         self.toolbar = self.CreateToolBar()
-        self.new_model_toolbar_item = self.toolbar.AddSimpleTool(wx.NewId(), images.getNewBitmap(), "New", "Long help for 'New'")
+        self.new_model_toolbar_item = self.toolbar.AddSimpleTool(wx.NewId(), Wave.images.getNewBitmap(), "New", "Long help for 'New'")
         self.toolbar.Realize()
 
     def init_menus(self):
@@ -150,7 +152,7 @@ class MainFrame(wx.Frame):
         if dialog_results.ShowModal() == wx.ID_OK:
             name = dialog_results.GetValue()
         dialog_results.Destroy()
-        table = simplegrid.RelationTable([], name)
+        table = Wave.grid.WaveGridTable([], name)
         self.session.add_new_table(table)	
         self.notebook.new_page(table)
 
@@ -161,13 +163,15 @@ class MainFrame(wx.Frame):
 
     def on_invert(self, event):
         grid = self.current_grid()
-        grid.apply_dbif_operation(dbif.invert)
-        grid.ForceRefresh()
+	name_ = '~' + grid.name
+        r_table = Wave.grid.apply_dbif_operation(dbif.invert, grid, name = name_)
+        self.notebook.new_page(r_table)       
 
     def on_closure(self, event):
         grid = self.current_grid()
-        grid.apply_dbif_operation(dbif.close)
-        grid.ForceRefresh()
+	name_ = '^' + grid.name
+        r_table = Wave.grid.apply_dbif_operation(dbif.close, grid, name = name_)
+        self.notebook.new_page(r_table)       
 
     def select_grid(self):
         no_of_pages = self.notebook.GetPageCount()
@@ -178,20 +182,21 @@ class MainFrame(wx.Frame):
         dialog_results = wx.SingleChoiceDialog ( None, 'Pick something....', 'Dialog Title', choices )
         if dialog_results.ShowModal() == wx.ID_OK:
             position = dialog_results.GetSelection()
+        dialog_results.Destroy()	    
         return grids[position]
 
     def on_join(self, event):
         grid1 = self.select_grid()
         grid2 = self.select_grid()
         table_name = grid1.name + '.' + grid2.name	
-        table = simplegrid.apply_dbif_operation(dbif.join, grid1, grid2, name = table_name)
+        table = Wave.grid.apply_dbif_operation(dbif.join, grid1, grid2, name = table_name)
         self.notebook.new_page(table)
 
     def on_diff(self, event):
         grid1 = self.select_grid()
         grid2 = self.select_grid()
         table_name = grid1.name + ' - ' + grid2.name	
-        table = simplegrid.apply_dbif_operation(dbif.diff, grid1, grid2, name = table_name)
+        table = Wave.grid.apply_dbif_operation(dbif.diff, grid1, grid2, name = table_name)
         self.notebook.new_page(table)
 
     def on_dr(self, event):
@@ -199,10 +204,14 @@ class MainFrame(wx.Frame):
         grid2 = self.select_grid()
         grid3 = self.select_grid()
         table_name = 'dangling requires'
-        table = simplegrid.apply_dbif_operation(MM2.dr, grid1, grid2, grid3, name = table_name)
+        table = Wave.grid.apply_dbif_operation(MM2.dr, grid1, grid2, grid3, name = table_name)
         self.notebook.new_page(table)
 
-if __name__ == '__main__':
+def main():
     app = WaveApp()
     app.MainLoop()
+    return 0
+
+if __name__ == '__main__':
+    sys.exit(main())
 

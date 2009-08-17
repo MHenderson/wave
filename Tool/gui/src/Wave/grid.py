@@ -1,6 +1,22 @@
-import wx, wx.grid, dbif
+## @package simplegrid
+#  Documentation for this module.
+#
+#  More details.
+
+import wx, wx.grid
+
+## Custom WAVE GridTable class.
+#
+#  \todo Do some more.
+#  \bug  Here is a bug.
             
-class RelationTable(wx.grid.PyGridTableBase):
+class WaveGridTable(wx.grid.PyGridTableBase):
+
+    """Custom WAVE GridTable class.
+    
+    
+       Here goes more documentation.
+    """
     
     def __init__(self, entries, name):
         wx.grid.PyGridTableBase.__init__(self)
@@ -35,10 +51,7 @@ class RelationTable(wx.grid.PyGridTableBase):
     def DeleteRows(self, num_of_rows = 1):
 	self.entries.pop()
 
-    def apply_dbif_operation(self, operation):
-        self.entries = operation(self.entries)
-
-class SimpleGrid(wx.grid.Grid):
+class WaveGrid(wx.grid.Grid):
 
     def __init__(self, parent, table):
         wx.grid.Grid.__init__(self, parent, -1, wx.Point(0, 0), wx.Size(600, 520))
@@ -53,14 +66,10 @@ class SimpleGrid(wx.grid.Grid):
 	self.GetTable().DeleteRows()
 	self.SetTable(self.GetTable()) 
 
-    def apply_dbif_operation(self, operation):
-        self.GetTable().apply_dbif_operation(operation)
-        self.SetTable(self.GetTable())
-
 def apply_dbif_operation(operation, *grids, **keypar):
     r_tables = [grid.GetTable() for grid in grids]
     tables = [r_table.entries for r_table in r_tables]
     result_entries = operation(*tables)
-    result_table = RelationTable(result_entries, keypar['name'])
+    result_table = WaveGridTable(result_entries, keypar['name'])
     return result_table
 
