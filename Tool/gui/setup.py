@@ -8,4 +8,11 @@ setup(
     entry_points = {
         'console_scripts': ['wavegui = Wave.wavegui:main']
 	},
-    )
+    
+    author = "P Henderson and M J Henderson",
+    author_email = "matthew_henderson@berea.edu",
+    description = "Whole Architecture Verification",
+    license = "GPL",
+    keywords = "wave verification",
+    url = "http://wiki.github.com/MHenderson/wave",  
+)
