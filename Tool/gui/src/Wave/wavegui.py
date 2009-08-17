@@ -163,13 +163,13 @@ class MainFrame(wx.Frame):
 
     def on_invert(self, event):
         grid = self.current_grid()
-	name_ = '~' + grid.name
+        name_ = '~' + grid.name
         r_table = Wave.grid.apply_dbif_operation(dbif.invert, grid, name = name_)
         self.notebook.new_page(r_table)       
 
     def on_closure(self, event):
         grid = self.current_grid()
-	name_ = '^' + grid.name
+        name_ = '^' + grid.name
         r_table = Wave.grid.apply_dbif_operation(dbif.close, grid, name = name_)
         self.notebook.new_page(r_table)       
 
