@@ -2,3 +2,5 @@
 *.dblite
 *.pyc
 *.swp
+Tool/gui/build
+Tool/gui/dist
