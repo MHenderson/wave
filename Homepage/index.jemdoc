@@ -7,8 +7,8 @@ The WAVE project .... Here you can find links to download the WAVE graphical use
   - [http://pypi.python.org/pypi/Wave/0.0.1 Wavegui download page at the Python Package Index.]
 
 == Documentation
-  - [ Wavegui documentation.] 
-  - [ Wave API documentation.]
+  - [http://packages.python.org/Wave Wavegui documentation.] 
+  - [http://packages.python.org/Wave/api/index.html Wave API documentation.]
 
 == Development
   - [http://github.com/MHenderson/wave/tree/master Wave Project at Github.]
