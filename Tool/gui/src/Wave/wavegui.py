@@ -1,6 +1,4 @@
-#!/usr/bin/env python
- 
-import wx, sys
+import wx, sys, pickle
 import Wave
 from Wave import images, dbif, grid, MM2
 
@@ -8,13 +6,20 @@ MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
 
 class WaveSession():
-    """WAVE session class."""
 
-    def __init__(self):
-        self.tables = [] 
+    """Wave session class.
+    
+       A Wave session consists of a dictionary of name/table pairs.
+    """
 
-    def add_new_table(self, table):
-        self.tables.append(table)
+    def __init__(self, tables = {}):
+        self.tables = tables
+
+    def data(self):
+        return self.tables
+
+    def add_new_table(self, table = [], name = ''):
+        self.tables[name] = table
 
 class WaveNotebook(wx.Notebook):
     """Custom WAVE wxPython-Notebook class."""
@@ -28,6 +33,10 @@ class WaveNotebook(wx.Notebook):
         self.AddPage(self.pages[-1], table.name)
         self.grid = Wave.grid.WaveGrid(self.pages[-1], table)
 
+## Custom WAVE wxPython-application class.
+#
+#  \todo Implement a splash-screen.
+
 class WaveApp(wx.App):
     """Custom WAVE wxPython-application class."""
 
@@ -35,14 +44,15 @@ class WaveApp(wx.App):
         wx.App.__init__(self, redirect, filename, useBestVisual, clearSigInt)
 
     def OnInit(self):
-        # image = wx.Image("wave-logo.bmp", wx.BITMAP_TYPE_BMP)
-        # bmp = image.ConvertToBitmap()
-        # wx.SplashScreen(bmp, wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT, 1000, None, -1)
-        # wx.Yield()
         frame = MainFrame(None, -1)
         frame.Show(1)
         self.SetTopWindow(frame)
         return True
+
+## Custom WAVE top-level window class.
+#
+#  \todo Modifying a WaveGrid object has no effect on the underlying 
+#        WaveSession object. Hence session saving is broken.
 
 class MainFrame(wx.Frame):
     """Custom WAVE top-level window class."""
@@ -78,11 +88,17 @@ class MainFrame(wx.Frame):
         self.toolbar.Realize()
 
     def init_menus(self):
+        self.init_session_menu()
         self.init_models_menu()
         self.init_metamodels_menu()
         self.init_operations_menu()
         self.init_scripts_menu()
         self.init_menubar()
+
+    def init_session_menu(self):
+        self.session_menu = wx.Menu()
+        self.open_session_menu_item = self.session_menu.Append(wx.NewId(), "&Open", "Open")
+        self.save_session_menu_item = self.session_menu.Append(wx.NewId(), "&Save", "Save")
 
     def init_models_menu(self):
         self.models_menu = wx.Menu()
@@ -117,10 +133,11 @@ class MainFrame(wx.Frame):
 
     def init_menubar(self):
         self.menuBar = wx.MenuBar()
+        self.menuBar.Append(self.session_menu, "&Sessions")
         self.menuBar.Append(self.models_menu, "&Models")
         self.menuBar.Append(self.metamodels_menu, "M&eta-models")
         self.menuBar.Append(self.operations_menu, "&Operations")       
-        self.menuBar.Append(self.scripts_menu, "&Scripts")       
+        self.menuBar.Append(self.scripts_menu, "Sc&ripts")       
         self.SetMenuBar(self.menuBar)
 
     def init_event_binding(self):
@@ -134,10 +151,27 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_join, self.join_menu_item)
         self.Bind(wx.EVT_MENU, self.on_diff, self.diff_menu_item)
         self.Bind(wx.EVT_MENU, self.on_dr, self.dr_menu_item)
+        self.Bind(wx.EVT_MENU, self.on_open_session, self.open_session_menu_item)
+        self.Bind(wx.EVT_MENU, self.on_save_session, self.save_session_menu_item)
 
     def current_grid(self):
         children = self.notebook.GetCurrentPage().GetChildren()
         return children[0]
+
+    def on_open_session(self, event):
+        file = open(r'/home/matthew/Desktop/session.wave', 'rb')
+        self.session = pickle.load(file)
+        data = self.session.data()
+        for name, table in data.iteritems():
+            grid_table = Wave.grid.WaveGridTable(table, name)
+            self.session.add_new_table(table, name)	
+            self.notebook.new_page(grid_table)
+        file.close()
+
+    def on_save_session(self, event):
+        file = open(r'/home/matthew/Desktop/session.wave', 'wb')
+        pickle.dump(self.session, file)
+        file.close()
 
     def on_close(self, event):
         self.Close(True)
@@ -152,9 +186,10 @@ class MainFrame(wx.Frame):
         if dialog_results.ShowModal() == wx.ID_OK:
             name = dialog_results.GetValue()
         dialog_results.Destroy()
-        table = Wave.grid.WaveGridTable([], name)
-        self.session.add_new_table(table)	
-        self.notebook.new_page(table)
+        table = [] 
+        grid_table = Wave.grid.WaveGridTable([], name)
+        self.session.add_new_table(table, name)	
+        self.notebook.new_page(grid_table)
 
     def on_delete_row(self, event):
         grid = self.current_grid()
