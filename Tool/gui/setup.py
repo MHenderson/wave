@@ -5,9 +5,17 @@ setup(
     version = "0.0.1",
     packages = find_packages('src'),
     package_dir = {'':'src'},
-    entry_points = {
-        'console_scripts': ['wavegui = Wave.wavegui:main']
-	},
+    entry_points = 
+    {
+        'gui_scripts': 
+        [
+            'wavegui = Wave.wavegui:main'
+        ]
+    },
+    install_requires = 
+    [
+	'sphinx >= 0.6.2',
+    ],
     
     author = "P Henderson and M J Henderson",
     author_email = "matthew_henderson@berea.edu",
