@@ -9,7 +9,8 @@ class WaveSession():
 
     """Wave session class.
     
-       A Wave session consists of a dictionary of name/table pairs.
+       A Wave session consists of a dictionary of name/table pairs. Each pair
+       corresponds to a named-table in the Wave gui.
     """
 
     def __init__(self, tables = {}):
@@ -22,7 +23,10 @@ class WaveSession():
         self.tables[name] = table
 
 class WaveNotebook(wx.Notebook):
-    """Custom WAVE wxPython-Notebook class."""
+    """Custom WAVE wxPython-Notebook class.
+    
+       A WaveNotebook extends the wx.Notebook by a collection of pages objects.
+    """
 
     def __init__(self, parent):
         wx.Notebook.__init__(self, parent)
@@ -51,7 +55,7 @@ class WaveApp(wx.App):
 
 ## Custom WAVE top-level window class.
 #
-#  \todo Modifying a WaveGrid object has no effect on the underlying 
+#  \bug  Modifying a WaveGrid object has no effect on the underlying 
 #        WaveSession object. Hence session saving is broken.
 
 class MainFrame(wx.Frame):
@@ -158,6 +162,16 @@ class MainFrame(wx.Frame):
         children = self.notebook.GetCurrentPage().GetChildren()
         return children[0]
 
+    def update_session(self):
+        no_of_pages = self.notebook.GetPageCount()
+        pages = [self.notebook.GetPage(i) for i in range(no_of_pages)]
+        children = [page.GetChildren() for page in pages]
+        grids = [child[0] for child in children]
+        names = [grid.name for grid in grids]
+        tables = [grid.GetTable().entries for grid in grids]
+        session_data = dict(zip(names, tables))
+        self.session = WaveSession(session_data)
+
     def on_open_session(self, event):
         file = open(r'/home/matthew/Desktop/session.wave', 'rb')
         self.session = pickle.load(file)
@@ -169,6 +183,7 @@ class MainFrame(wx.Frame):
         file.close()
 
     def on_save_session(self, event):
+        self.update_session()
         file = open(r'/home/matthew/Desktop/session.wave', 'wb')
         pickle.dump(self.session, file)
         file.close()
