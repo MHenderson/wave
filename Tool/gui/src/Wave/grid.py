@@ -1,8 +1,3 @@
-## @package simplegrid
-#  Documentation for this module.
-#
-#  More details.
-
 import wx, wx.grid
 
 ## Custom WAVE GridTable class.
