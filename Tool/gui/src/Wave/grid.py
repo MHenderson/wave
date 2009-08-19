@@ -1,9 +1,4 @@
 import wx, wx.grid
-
-## Custom WAVE GridTable class.
-#
-#  \todo Do some more.
-#  \bug  Here is a bug.
             
 class WaveGridTable(wx.grid.PyGridTableBase):
 
