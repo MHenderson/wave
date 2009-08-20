@@ -9,3 +9,4 @@ Tool/gui/.pypirc
 Tool/gui/doc/_build
 Tool/gui/doc/_static
 Tool/gui/doc/_templates
+Buildbot/
