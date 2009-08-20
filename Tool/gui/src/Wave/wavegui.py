@@ -5,18 +5,30 @@ from Wave import images, dbif, grid, MM2
 MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
 
+##
+# \todo A WaveSession should also contain metamodels.
+
 class WaveSession():
 
     """Wave session class.
     
-       A Wave session consists of a collection of Wave Relations. 
-    """
+       A Wave session consists of a collection of Wave Relations. The
+       collection of relations constitutes a model."""
+    
+    ##
+    # \todo 'relations' member should be renamed 'model'.
 
     def __init__(self, relations = []):
         self.relations = relations
 
+    ##
+    # \todo Rename 'model'.
+
     def data(self):
         return self.relations
+
+    ##
+    # \todo Rename 'add_new_relation'.
 
     def add_new_table(self, relation):
         self.relations.append(Wave.grid.Relation(relation.table, relation.name))
@@ -106,11 +118,9 @@ class MainFrame(wx.Frame):
 
     def init_models_menu(self):
         self.models_menu = wx.Menu()
-        self.new_model_menu_item = self.models_menu.Append(wx.NewId(), "&New\tCtrl-N", "New")
-        self.models_menu.Append(wx.NewId(), "&Open", "Open")
-        self.models_menu.Append(wx.NewId(), "&Save", "Save")
-        self.new_row_menu_item = self.models_menu.Append(wx.NewId(), "Add row\tCtrl-R", "Add row")
-        self.delete_row_menu_item = self.models_menu.Append(wx.NewId(), "Delete row\tCtrl-X", "Delete row")
+        self.new_model_menu_item = self.models_menu.Append(wx.NewId(), "&New relation\tCtrl-N", "Add a new relation to the current model.")
+        self.new_row_menu_item = self.models_menu.Append(wx.NewId(), "Add row\tCtrl-R", "Add row to the current relation.")
+        self.delete_row_menu_item = self.models_menu.Append(wx.NewId(), "Delete row\tCtrl-X", "Delete row from the current relation.")
 
     def init_metamodels_menu(self):
         self.metamodels_menu = wx.Menu()
@@ -126,7 +136,6 @@ class MainFrame(wx.Frame):
         self.join_menu_item = self.operations_menu.Append(wx.NewId(), "Join", "Join.")
         self.diff_menu_item = self.operations_menu.Append(wx.NewId(), "Diff", "Difference.")
 
-
     def init_scripts_menu(self):
         self.scripts_menu = wx.Menu()
         self.dr_menu_item = self.scripts_menu.Append(wx.NewId(), "d&r", "Dangling requires")
@@ -137,7 +146,7 @@ class MainFrame(wx.Frame):
     def init_menubar(self):
         self.menuBar = wx.MenuBar()
         self.menuBar.Append(self.session_menu, "&Session")
-        self.menuBar.Append(self.models_menu, "&Models")
+        self.menuBar.Append(self.models_menu, "&Model")
         self.menuBar.Append(self.metamodels_menu, "M&eta-models")
         self.menuBar.Append(self.operations_menu, "&Operations")       
         self.menuBar.Append(self.scripts_menu, "Sc&ripts")       
@@ -215,7 +224,7 @@ class MainFrame(wx.Frame):
         grid.ForceRefresh()
 
     def on_new_model(self, event):
-        dialog_results = wx.TextEntryDialog(None, "Enter name for new relation table:",'Relation name', 'New relation')
+        dialog_results = wx.TextEntryDialog(None, "Enter name for new relation:",'Relation name', 'New relation')
         if dialog_results.ShowModal() == wx.ID_OK:
             name = dialog_results.GetValue()
         dialog_results.Destroy()
