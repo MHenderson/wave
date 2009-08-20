@@ -1,65 +1,79 @@
 import wx, wx.grid
-            
-class WaveGridTable(wx.grid.PyGridTableBase):
+           
+class Relation():
+
+    """Basic representation of relations."""
+
+    def __init__(self, table = [], name = None):
+        self.table = table
+        self.name = name
+
+class WaveGridTable(wx.grid.PyGridTableBase, Relation):
 
     """Custom WAVE GridTable class.
     
-    
-       Here goes more documentation.
+       Adapts a Wave Table for use as a grid table.
     """
     
-    def __init__(self, entries, name):
+    def __init__(self, relation):
         wx.grid.PyGridTableBase.__init__(self)
-        self.entries = entries
-        self.name = name
-	
+        self.relation = relation
+
     def GetNumberRows(self):
-	return len(self.entries)
+        return len(self.relation.table)
 
     def GetNumberCols(self):
         return 2
 
     def GetColLabelValue(self, col):
-	return col
+        return col
 
     def GetRowLabelValue(self, row):
-	return row
+        return row
 
     def IsEmptyCell(self, row, col):
-	return False
+        return False
 
     def GetValue(self, row, col):
-	return self.entries[row][col]
+        return self.relation.table[row][col]
 
     def SetValue(self, row, col, value):
-	current_tuple = self.entries[row]
-	self.entries[row] = current_tuple[:col] + (value,) + current_tuple[col+1:]
+        current_tuple = self.relation.table[row]
+        self.relation.table[row] = current_tuple[:col] + (value,) + current_tuple[col+1:]
 
     def AppendRows(self, num_of_rows = 1):
-	self.entries.append((0,0))
+        self.relation.table.append((0,0))
 
     def DeleteRows(self, num_of_rows = 1):
-	self.entries.pop()
+        self.relation.table.pop()
 
 class WaveGrid(wx.grid.Grid):
 
-    def __init__(self, parent, table):
+    def __init__(self, parent, grid_table):
         wx.grid.Grid.__init__(self, parent, -1, wx.Point(0, 0), wx.Size(600, 520))
-	self.name = table.name
-        self.SetTable(table) 
+        self.grid_table = grid_table
+        self.SetTable(self.grid_table) 
 
     def AppendRows(self, num_of_rows = 1):
-	self.GetTable().AppendRows()
-	self.SetTable(self.GetTable()) 
+        self.GetTable().AppendRows()
+        self.SetTable(self.GetTable()) 
 
     def DeleteRows(self, pos = 0, numRows = 1, updateLabels = False):
-	self.GetTable().DeleteRows()
-	self.SetTable(self.GetTable()) 
+        self.GetTable().DeleteRows()
+        self.SetTable(self.GetTable()) 
 
-def apply_dbif_operation(operation, *grids, **keypar):
-    r_tables = [grid.GetTable() for grid in grids]
-    tables = [r_table.entries for r_table in r_tables]
-    result_entries = operation(*tables)
-    result_table = WaveGridTable(result_entries, keypar['name'])
+
+## apply_dbif_operation
+#
+#  Applies a dbif operation to a collection of WaveGrid objects.
+#
+#  \todo Refactor into two components - one which handles Relations and
+#        another which, for convenience, handles grids.
+
+def apply_dbif_operation(operation, *grids):
+    grid_tables = [grid.GetTable() for grid in grids]
+    relations = [grid_table.relation for grid_table in grid_tables]
+    relation_tables = [relation.table for relation in relations]
+    result_table = operation(*relation_tables)
     return result_table
 
