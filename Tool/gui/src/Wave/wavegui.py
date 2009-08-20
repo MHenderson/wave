@@ -1,4 +1,4 @@
-import wx, sys, pickle
+import wx, sys, pickle, wx.aui
 import Wave
 from Wave import images, dbif, grid, MM2
 
@@ -21,14 +21,14 @@ class WaveSession():
     def add_new_table(self, relation):
         self.relations.append(Wave.grid.Relation(relation.table, relation.name))
 
-class WaveNotebook(wx.Notebook):
+class WaveNotebook(wx.aui.AuiNotebook):
     """Custom WAVE wxPython-Notebook class.
     
        A WaveNotebook extends the wx.Notebook by a collection of pages objects.
     """
 
     def __init__(self, parent):
-        wx.Notebook.__init__(self, parent)
+        wx.aui.AuiNotebook.__init__(self, parent)
         self.pages = []
 
     def new_page(self, grid_table):
