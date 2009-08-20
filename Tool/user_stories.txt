@@ -1,3 +1,79 @@
+Story 1
+
+1.       Bill has been reading Henderson and Henderson’s ICSR paper and wants to use WAVE to play with the data and the metamodel used in that paper
+
+2.       Consequently, he needs to record the following relations
+
+a.       contains=[(P,A),(P,B),(Q,A),….]
+
+b.      requires=[(A,IB),(B,IC),(P,IC),…]
+
+c.       supplies=[(A,IA),(P,IA),(B,IB),…]
+
+3.       He opens up WAVE for the first time and creates a table called “contains”
+
+4.       He enters the data for “contains”
+
+5.       He repeats this for tables called “supplies” and “requires”
+
+6.       He saves the tables to a project, in case he loses the data
+
+7.       He loads the metamodel (MM2?) with the definitions of “dangling_requires” etc
+
+8.       He executes the “dangling_requires” consistency check by selecting the appropriate action from a menu
+
+9.       This constructs a new table called “dr”, which Bill can browse
+
+10.   He notices that (Q,IB) appears in that table
+
+11.   He tries to correct this inconsistency by editing “supplies” adding (D,IB)
+
+12.   Rerunning the consistency check shows that this correction works
+
+13.   Bill removes this change and instead edits contains to “contains” adding (Q,B)
+
+14.   This also corrects the inconsistency
+
+15.   Bill plays with various other changes to the tables, to be sure he understands dangling_requires
+
+16.   Periodically, Bill saves the project. This also saves the “dr” table (and any other tables constructed by consistency checking)
+
+17.   Bill prints an html report, which prints each table including those that list inconsistencies.
+
+ 
+
+Story 2
+
+1.       Bill is interested in modifying the metamodel to alter the meaning of “dangling supplies”
+
+2.       This means he needs to modify the Python, following a house style that codes-up relational algebra in a standard way
+
+3.       Fortunately, Hendeson and Henderson have documented exactly how to do this, so Bill can make a new metamodel (MM2a) which he can test in the same way as he tested MM2
+
+ 
+
+Story 3
+
+1.       Meanwhile, Hilary has been playing with WAVE herself and has her own models, one of which extends the data from Henderson and Henderson’s ICSR paper in a way that differs from the changes Bill has made
+
+2.       Hilary wants to see if her data and Bill’s are consistent, or introduce new inconsistencies
+
+3.       Hilary obtains a copy of Bills project file
+
+4.       She now opens WAVE and loads her own data
+
+5.       Next she selects “merge” from a menu and selects Bill’s project
+
+6.       This causes Bill’s tables to be loaded on top of Hilary’s (in some fashion, conjecture – just take union of tables with same names)
+
+7.       Hilary can now run the MM2 checks on the merged data.
+
+8.       She can also get MM2a from Bill and run those checks
+
+9.       She can produce a new metamodel, based on her research of the merged data and publish this for others
+
+10.   She can save the merged project to a different location, so as not to overwrite either her own data or her copy of Bill’s data
+
 1. Creating a new model.
 
  Bob selects the "New" option from the "Models" menu (alternatively, he can click on the "New" icon of the "Models" toolbar or use the Ctrl-N accelerator). 
