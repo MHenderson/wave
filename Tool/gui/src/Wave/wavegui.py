@@ -158,7 +158,8 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_save_session, self.save_session_menu_item)
 
     def current_grid(self):
-        children = self.notebook.GetCurrentPage().GetChildren()
+        selection = self.notebook.GetSelection()
+        children = self.notebook.GetPage(selection).GetChildren()
         return children[0]
 
     def update_session(self):
