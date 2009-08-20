@@ -1,4 +1,4 @@
-import wx, sys, pickle, wx.aui
+import wx, sys, pickle, wx.aui, os
 import Wave
 from Wave import images, dbif, grid, MM2
 
@@ -102,6 +102,7 @@ class MainFrame(wx.Frame):
         self.session_menu = wx.Menu()
         self.open_session_menu_item = self.session_menu.Append(wx.NewId(), "&Open", "Open")
         self.save_session_menu_item = self.session_menu.Append(wx.NewId(), "&Save", "Save")
+        self.exit_menu_item = self.session_menu.Append(wx.NewId(), "E&xit\tCtrl-Q", "Exit")
 
     def init_models_menu(self):
         self.models_menu = wx.Menu()
@@ -110,7 +111,6 @@ class MainFrame(wx.Frame):
         self.models_menu.Append(wx.NewId(), "&Save", "Save")
         self.new_row_menu_item = self.models_menu.Append(wx.NewId(), "Add row\tCtrl-R", "Add row")
         self.delete_row_menu_item = self.models_menu.Append(wx.NewId(), "Delete row\tCtrl-X", "Delete row")
-        self.exit_menu_item = self.models_menu.Append(wx.NewId(), "E&xit\tCtrl-Q", "Exit")
 
     def init_metamodels_menu(self):
         self.metamodels_menu = wx.Menu()
@@ -136,7 +136,7 @@ class MainFrame(wx.Frame):
 
     def init_menubar(self):
         self.menuBar = wx.MenuBar()
-        self.menuBar.Append(self.session_menu, "&Sessions")
+        self.menuBar.Append(self.session_menu, "&Session")
         self.menuBar.Append(self.models_menu, "&Models")
         self.menuBar.Append(self.metamodels_menu, "M&eta-models")
         self.menuBar.Append(self.operations_menu, "&Operations")       
@@ -170,7 +170,18 @@ class MainFrame(wx.Frame):
         self.session = WaveSession(relations)
 
     def on_open_session(self, event):
-        file = open(r'/home/matthew/Desktop/session.wave', 'rb')
+        wildcard = "Wave files (*.wave)|*.wave| " \
+                   "All files (*.*)|*.* "
+        dlg = wx.FileDialog(
+                self, message = "Choose a file",
+                defaultDir = os.getcwd(), 
+                defaultFile = "",
+                wildcard = wildcard,
+                style = wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR )
+        if dlg.ShowModal() == wx.ID_OK:
+            paths = dlg.GetPaths()
+        file = open(paths[0], 'rb')
+        dlg.Destroy()        
         self.session = pickle.load(file)
         relations = self.session.data()
         for relation in relations:
@@ -179,8 +190,18 @@ class MainFrame(wx.Frame):
         file.close()
 
     def on_save_session(self, event):
+        wildcard = "Wave files (*.wave)|*.wave| " \
+                   "All files (*.*)|*.* "
+        dlg = wx.FileDialog(
+            self, message="Save file as ...", defaultDir=os.getcwd(), 
+            defaultFile="", wildcard=wildcard, style=wx.SAVE
+            )
+        dlg.SetFilterIndex(2)
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+        file = open(path, 'wb')        
+        dlg.Destroy()
         self.update_session()
-        file = open(r'/home/matthew/Desktop/session.wave', 'wb')
         pickle.dump(self.session, file)
         file.close()
 
