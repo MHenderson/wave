@@ -54,6 +54,8 @@ class WaveApp(wx.App):
 
 ## Custom WAVE top-level window class.
 #
+#  \todo Design and implement a component to turn any dbif-style function
+#        into an event handler. (e.g. dbif.join --> on_join)
 
 class MainFrame(wx.Frame):
     """Custom WAVE top-level window class."""
@@ -255,9 +257,11 @@ class MainFrame(wx.Frame):
         grid1 = self.select_grid()
         grid2 = self.select_grid()
         grid3 = self.select_grid()
-        table_name = 'dangling requires'
-        table = Wave.grid.apply_dbif_operation(MM2.dr, grid1, grid2, grid3, name = table_name)
-        self.notebook.new_page(table)
+        result_name = 'dangling requires'
+        result_table = Wave.grid.apply_dbif_operation(MM2.dr, grid1, grid2, grid3)
+        result_relation = Wave.grid.Relation(result_table, result_name)
+        result_grid_table = Wave.grid.WaveGridTable(result_relation)
+        self.notebook.new_page(result_grid_table)
 
 def main():
     app = WaveApp()
