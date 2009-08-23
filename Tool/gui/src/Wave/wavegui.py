@@ -1,6 +1,6 @@
 import wx, sys, pickle, wx.aui, os
 import Wave
-from Wave import images, dbif, grid, MM2, error, handlers
+from Wave import images, dbif, grid, MM2, exceptions, handlers, metamodel
 from Wave.exceptions import WaveIOError
 
 ##
@@ -101,7 +101,6 @@ class MainFrame(wx.Frame):
         self.init_models_menu()
         self.init_metamodels_menu()
         self.init_operations_menu()
-        self.init_scripts_menu()
         self.init_menubar()
 
     def init_session_menu(self):
@@ -120,8 +119,6 @@ class MainFrame(wx.Frame):
         self.metamodels_menu = wx.Menu()
         self.import_metamodel_menu_item = self.metamodels_menu.Append(wx.NewId(), "&Import", "Import")
         self.metamodels_menu.Append(wx.NewId(), "&Export", "Export")
-        self.metamodels_menu.AppendSeparator()
-        self.metamodels_menu.Append(wx.NewId(), "&MM2 (Current metamodel)", "Display Options")
 
     def init_operations_menu(self):
         self.operations_menu = wx.Menu()
@@ -130,20 +127,12 @@ class MainFrame(wx.Frame):
         self.join_menu_item = self.operations_menu.Append(wx.NewId(), "Join", "Join.")
         self.diff_menu_item = self.operations_menu.Append(wx.NewId(), "Diff", "Difference.")
 
-    def init_scripts_menu(self):
-        self.scripts_menu = wx.Menu()
-        self.dr_menu_item = self.scripts_menu.Append(wx.NewId(), "d&r", "Dangling requires")
-        self.ds_menu_item = self.scripts_menu.Append(wx.NewId(), "d&s", "Dangling supplies")
-        self.scripts_menu.AppendSeparator()
-        self.scripts_menu.Append(wx.NewId(), "Export HTML report", "")
-
     def init_menubar(self):
         self.menuBar = wx.MenuBar()
         self.menuBar.Append(self.session_menu, "&Session")
         self.menuBar.Append(self.models_menu, "&Model")
         self.menuBar.Append(self.metamodels_menu, "M&eta-models")
         self.menuBar.Append(self.operations_menu, "&Operations")       
-        self.menuBar.Append(self.scripts_menu, "Sc&ripts")       
         self.SetMenuBar(self.menuBar)
 
     def init_event_binding(self):
@@ -156,8 +145,6 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_closure, self.closure_menu_item)
         self.Bind(wx.EVT_MENU, self.on_join, self.join_menu_item)
         self.Bind(wx.EVT_MENU, self.on_diff, self.diff_menu_item)
-        self.Bind(wx.EVT_MENU, self.on_dr, self.dr_menu_item)
-        self.Bind(wx.EVT_MENU, self.on_ds, self.ds_menu_item)
         self.Bind(wx.EVT_MENU, self.on_open_session, self.open_session_menu_item)
         self.Bind(wx.EVT_MENU, self.on_save_session, self.save_session_menu_item)
         self.Bind(wx.EVT_MENU, self.on_import_metamodel, self.import_metamodel_menu_item)
@@ -278,14 +265,8 @@ class MainFrame(wx.Frame):
     def on_diff(self, event):
         Wave.handlers.binary_infix_operator_to_selected_pages(self, dbif.diff, '-')
 
-    def on_dr(self, event):
-        Wave.handlers.ternary_function_to_selected_pages(self, MM2.DR, 'dr')
-
-    def on_ds(self, event):
-        Wave.handlers.binary_function_to_selected_pages(self, MM2.DS, 'ds')
-
     def on_import_metamodel(self, event):
-        pass
+        Wave.metamodel.WaveMetamodelMenu(self)
 
 def main():
     app = WaveApp()
