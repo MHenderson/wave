@@ -35,17 +35,15 @@ class WaveSession():
 class WaveNotebook(wx.aui.AuiNotebook):
     """Custom WAVE wxPython-Notebook class.
     
-       A WaveNotebook extends the wx.Notebook by a collection of page objects.
     """
 
     def __init__(self, parent):
         wx.aui.AuiNotebook.__init__(self, parent)
-        self.pages = []
 
     def new_page(self, grid_table):
-        self.pages.append(wx.Panel(self))
-        self.AddPage(self.pages[-1], grid_table.relation.name)
-        self.grid = Wave.grid.WaveGrid(self.pages[-1], grid_table)
+        page = wx.Panel(self)
+        self.AddPage(page, grid_table.relation.name)
+        Wave.grid.WaveGrid(page, grid_table)
 
 ## Custom WAVE wxPython-application class.
 #
