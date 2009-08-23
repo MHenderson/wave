@@ -134,7 +134,7 @@ class MainFrame(wx.Frame):
     def init_scripts_menu(self):
         self.scripts_menu = wx.Menu()
         self.dr_menu_item = self.scripts_menu.Append(wx.NewId(), "d&r", "Dangling requires")
-        self.scripts_menu.Append(wx.NewId(), "d&s", "Dangling supplies")
+        self.ds_menu_item = self.scripts_menu.Append(wx.NewId(), "d&s", "Dangling supplies")
         self.scripts_menu.AppendSeparator()
         self.scripts_menu.Append(wx.NewId(), "Export HTML report", "")
 
@@ -158,6 +158,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_join, self.join_menu_item)
         self.Bind(wx.EVT_MENU, self.on_diff, self.diff_menu_item)
         self.Bind(wx.EVT_MENU, self.on_dr, self.dr_menu_item)
+        self.Bind(wx.EVT_MENU, self.on_ds, self.ds_menu_item)
         self.Bind(wx.EVT_MENU, self.on_open_session, self.open_session_menu_item)
         self.Bind(wx.EVT_MENU, self.on_save_session, self.save_session_menu_item)
 
@@ -277,7 +278,10 @@ class MainFrame(wx.Frame):
         Wave.handlers.binary_infix_operator_to_selected_pages(self, dbif.diff, '-')
 
     def on_dr(self, event):
-        Wave.handlers.ternary_function_to_selected_pages(self, MM2.dr, 'dr')
+        Wave.handlers.ternary_function_to_selected_pages(self, MM2.DR, 'dr')
+
+    def on_ds(self, event):
+        Wave.handlers.binary_function_to_selected_pages(self, MM2.DS, 'ds')
 
 def main():
     app = WaveApp()

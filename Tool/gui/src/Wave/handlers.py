@@ -17,6 +17,17 @@ def binary_infix_operator_to_selected_pages(frame, operator, infix):
     result_grid_table = Wave.grid.apply_to_grid_tables(operator, grid_table_1, grid_table_2)
     frame.notebook.new_page(result_grid_table, result_name)
 
+def binary_function_to_selected_pages(frame, function, name):
+    page_index_1 = frame.select_page_index()
+    page_index_2 = frame.select_page_index()
+    name_1 = frame.notebook.GetPageText(page_index_1)
+    name_2 = frame.notebook.GetPageText(page_index_2)
+    grid_table_1 = frame.get_grid_table(page_index_1)
+    grid_table_2 = frame.get_grid_table(page_index_2)
+    result_name = name + '(' + name_1 + ', ' + name_2 + ')'
+    result_grid_table = Wave.grid.apply_to_grid_tables(function, grid_table_1, grid_table_2)
+    frame.notebook.new_page(result_grid_table, result_name)
+
 def ternary_function_to_selected_pages(frame, function, name):
     page_index_1 = frame.select_page_index()
     page_index_2 = frame.select_page_index()
