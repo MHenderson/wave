@@ -77,3 +77,15 @@ def apply_dbif_operation(operation, *grids):
     result_table = operation(*relation_tables)
     return result_table
 
+def apply_to_relations(operation, *relations, **kwargs):
+    relation_tables = [relation.table for relation in relations]
+    result_table = operation(*relation_tables)
+    result_relation = Relation(result_table, 'test')
+    return result_relation
+
+def apply_to_grid_tables(operation, *grid_tables, **kwargs):
+    relations = [grid_table.relation for grid_table in grid_tables]
+    result_relation = apply_to_relations(operation, *relations)
+    result_grid_table = WaveGridTable(result_relation)
+    return result_grid_table
+

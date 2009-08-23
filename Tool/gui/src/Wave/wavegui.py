@@ -4,9 +4,6 @@ import Wave
 from Wave import images, dbif, grid, MM2, error
 from Wave.error import WaveIOError
 
-MAIN_FRAME_SIZE = (600, 600)
-MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
-
 ##
 # \todo A WaveSession should also contain metamodels.
 
@@ -38,7 +35,7 @@ class WaveSession():
 class WaveNotebook(wx.aui.AuiNotebook):
     """Custom WAVE wxPython-Notebook class.
     
-       A WaveNotebook extends the wx.Notebook by a collection of pages objects.
+       A WaveNotebook extends the wx.Notebook by a collection of page objects.
     """
 
     def __init__(self, parent):
@@ -75,12 +72,15 @@ class WaveApp(wx.App):
 #        on Linux.
 #  \todo Implement row deletion for a specified row.
 #  \bug  Closing the main window on Windows generates an error.
+#  \todo Window title should incorporate name of currently open session.
 
 class MainFrame(wx.Frame):
     """Custom WAVE top-level window class."""
 
     def __init__(self, parent, id):
-        wx.Frame.__init__(self, parent, id, title = MAIN_FRAME_TITLE, size = MAIN_FRAME_SIZE)
+        self.size = (600, 600)
+        self.title = "WAVE (Whole Architecture Verification)"
+        wx.Frame.__init__(self, parent, id, title = self.title, size = self.size)
         self.init_session()
         self.init_panel()
         self.init_notebook()
@@ -253,10 +253,9 @@ class MainFrame(wx.Frame):
 
     def on_invert(self, event):
         current_grid = self.current_grid()
+        current_grid_table = current_grid.grid_table
         result_name = '~' + current_grid.grid_table.relation.name
-        result_table = Wave.grid.apply_dbif_operation(dbif.invert, current_grid)
-        result_relation = Wave.grid.Relation(result_table, result_name)
-        result_grid_table = Wave.grid.WaveGridTable(result_relation)
+        result_grid_table = Wave.grid.apply_to_grid_tables(dbif.invert, current_grid_table, name = result_name)
         self.notebook.new_page(result_grid_table)       
 
     def on_closure(self, event):
