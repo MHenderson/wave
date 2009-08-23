@@ -1,6 +1,8 @@
 import wx, sys, pickle, wx.aui, os
+from exceptions import IOError
 import Wave
-from Wave import images, dbif, grid, MM2
+from Wave import images, dbif, grid, MM2, error
+from Wave.error import WaveIOError
 
 MAIN_FRAME_SIZE = (600, 600)
 MAIN_FRAME_TITLE = "WAVe (Whole Architecture Verification)"
@@ -68,6 +70,11 @@ class WaveApp(wx.App):
 #
 #  \todo Design and implement a component to turn any dbif-style function
 #        into an event handler. (e.g. dbif.join --> on_join)
+#  \bug  Inconsistent behavior of session saving. On Windows, Wave can 
+#        produce .wave files with a different format to those produced
+#        on Linux.
+#  \todo Implement row deletion for a specified row.
+#  \bug  Closing the main window on Windows generates an error.
 
 class MainFrame(wx.Frame):
     """Custom WAVE top-level window class."""
@@ -190,7 +197,10 @@ class MainFrame(wx.Frame):
                 style = wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR )
         if dlg.ShowModal() == wx.ID_OK:
             paths = dlg.GetPaths()
-        file = open(paths[0], 'rb')
+        try:
+            file = open(paths[0], 'rb')
+        except IOError:
+            raise WaveIOError
         dlg.Destroy()        
         self.session = pickle.load(file)
         relations = self.session.data()
@@ -209,7 +219,10 @@ class MainFrame(wx.Frame):
         dlg.SetFilterIndex(2)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
-        file = open(path, 'wb')        
+        try:
+            file = open(path, 'wb')
+        except IOError:
+            raise WAVEIOError
         dlg.Destroy()
         self.update_session()
         pickle.dump(self.session, file)

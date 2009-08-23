@@ -1,0 +1,1 @@
+class WaveIOError(Exception): pass
