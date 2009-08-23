@@ -1,8 +1,7 @@
 import wx, sys, pickle, wx.aui, os
-from exceptions import IOError
 import Wave
 from Wave import images, dbif, grid, MM2, error, handlers
-from Wave.error import WaveIOError
+from Wave.exceptions import WaveIOError
 
 ##
 # \todo A WaveSession should also contain metamodels.
