@@ -257,10 +257,10 @@ class MainFrame(wx.Frame):
         grid.ForceRefresh()
 
     def on_invert(self, event):
-        Wave.handlers.prefix_operator_to_current_page(self, dbif.invert, '~')
+        Wave.handlers.unary_prefix_operator_to_current_page(self, dbif.invert, '~')
 
     def on_closure(self, event):
-        Wave.handlers.prefix_operator_to_current_page(self, dbif.close, '^')
+        Wave.handlers.unary_prefix_operator_to_current_page(self, dbif.close, '^')
 
     def select_page_index(self):
         no_of_pages = self.notebook.GetPageCount()

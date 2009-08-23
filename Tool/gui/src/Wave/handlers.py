@@ -1,7 +1,7 @@
 import Wave
 from Wave import grid
 
-def prefix_operator_to_current_page(frame, operator, prefix):
+def unary_prefix_operator_to_current_page(frame, operator, prefix):
     current_page_index = frame.notebook.GetSelection()
     result_name = prefix + frame.notebook.GetPageText(current_page_index)
     current_grid_table = frame.current_grid_table()        
