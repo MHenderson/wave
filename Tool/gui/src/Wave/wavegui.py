@@ -118,7 +118,7 @@ class MainFrame(wx.Frame):
 
     def init_metamodels_menu(self):
         self.metamodels_menu = wx.Menu()
-        self.metamodels_menu.Append(wx.NewId(), "&Import", "Import")
+        self.import_metamodel_menu_item = self.metamodels_menu.Append(wx.NewId(), "&Import", "Import")
         self.metamodels_menu.Append(wx.NewId(), "&Export", "Export")
         self.metamodels_menu.AppendSeparator()
         self.metamodels_menu.Append(wx.NewId(), "&MM2 (Current metamodel)", "Display Options")
@@ -160,6 +160,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_ds, self.ds_menu_item)
         self.Bind(wx.EVT_MENU, self.on_open_session, self.open_session_menu_item)
         self.Bind(wx.EVT_MENU, self.on_save_session, self.save_session_menu_item)
+        self.Bind(wx.EVT_MENU, self.on_import_metamodel, self.import_metamodel_menu_item)
 
     def current_page(self):
         selection = self.notebook.GetSelection()
@@ -252,7 +253,8 @@ class MainFrame(wx.Frame):
 
     def on_delete_row(self, event):
         grid = self.current_grid()
-        grid.DeleteRows()
+        row = grid.GetGridCursorRow()
+        grid.DeleteRows(row)
         grid.ForceRefresh()
 
     def on_invert(self, event):
@@ -281,6 +283,9 @@ class MainFrame(wx.Frame):
 
     def on_ds(self, event):
         Wave.handlers.binary_function_to_selected_pages(self, MM2.DS, 'ds')
+
+    def on_import_metamodel(self, event):
+        pass
 
 def main():
     app = WaveApp()

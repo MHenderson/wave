@@ -7,6 +7,9 @@ class Relation():
     def __init__(self, table = []):
         self.table = table
 
+    def __delitem__(self, index):
+        del self.table[index]
+
 class WaveGridTable(wx.grid.PyGridTableBase, Relation):
 
     """Custom WAVE GridTable class.
@@ -43,8 +46,8 @@ class WaveGridTable(wx.grid.PyGridTableBase, Relation):
     def AppendRows(self, num_of_rows = 1):
         self.relation.table.append((0,0))
 
-    def DeleteRows(self, num_of_rows = 1):
-        self.relation.table.pop()
+    def DeleteRows(self, pos = 0, numRows = 1, updateLabels = False):
+        del self.relation[pos]
 
 class WaveGrid(wx.grid.Grid):
 
@@ -58,7 +61,7 @@ class WaveGrid(wx.grid.Grid):
         self.SetTable(self.GetTable()) 
 
     def DeleteRows(self, pos = 0, numRows = 1, updateLabels = False):
-        self.GetTable().DeleteRows()
+        self.GetTable().DeleteRows(pos, numRows, updateLabels)
         self.SetTable(self.GetTable()) 
 
 
