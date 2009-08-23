@@ -1,7 +1,7 @@
 import wx, sys, pickle, wx.aui, os
 from exceptions import IOError
 import Wave
-from Wave import images, dbif, grid, MM2, error
+from Wave import images, dbif, grid, MM2, error, handlers
 from Wave.error import WaveIOError
 
 ##
@@ -11,26 +11,16 @@ class WaveSession():
 
     """Wave session class.
     
-       A Wave session consists of a collection of Wave Relations. The
-       collection of relations constitutes a model."""
-    
-    ##
-    # \todo 'relations' member should be renamed 'model'.
+       A Wave session records all models, metamodels and names.
+    """
+    def __init__(self, name_relation_map = {}):
+        self.name_relation_map = name_relation_map
 
-    def __init__(self, relations = []):
-        self.relations = relations
+    def get(self):
+        return self.name_relation_map
 
-    ##
-    # \todo Rename 'model'.
-
-    def data(self):
-        return self.relations
-
-    ##
-    # \todo Rename 'add_new_relation'.
-
-    def add_new_table(self, relation):
-        self.relations.append(Wave.grid.Relation(relation.table, relation.name))
+    def set(self, relation, name):
+        self.name_relation_map[name] = relation
 
 class WaveNotebook(wx.aui.AuiNotebook):
     """Custom WAVE wxPython-Notebook class.
@@ -40,9 +30,9 @@ class WaveNotebook(wx.aui.AuiNotebook):
     def __init__(self, parent):
         wx.aui.AuiNotebook.__init__(self, parent)
 
-    def new_page(self, grid_table):
+    def new_page(self, grid_table, name = ''):
         page = wx.Panel(self)
-        self.AddPage(page, grid_table.relation.name)
+        self.AddPage(page, name)
         Wave.grid.WaveGrid(page, grid_table)
 
 ## Custom WAVE wxPython-application class.
@@ -171,18 +161,34 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_open_session, self.open_session_menu_item)
         self.Bind(wx.EVT_MENU, self.on_save_session, self.save_session_menu_item)
 
-    def current_grid(self):
+    def current_page(self):
         selection = self.notebook.GetSelection()
-        children = self.notebook.GetPage(selection).GetChildren()
+        page = self.notebook.GetPage(selection)
+        return page
+
+    def current_grid(self):
+        current_page = self.current_page()
+        children = current_page.GetChildren()
         return children[0]
+
+    def current_grid_table(self):
+        return self.current_grid().grid_table
+
+    def get_grid(self, index):
+        page = self.notebook.GetPage(index)
+        children = page.GetChildren()
+        return children[0]
+
+    def get_grid_table(self, index):
+        return self.get_grid(index).grid_table
 
     def update_session(self):
         no_of_pages = self.notebook.GetPageCount()
-        pages = [self.notebook.GetPage(i) for i in range(no_of_pages)]
-        children = [page.GetChildren() for page in pages]
-        grids = [child[0] for child in children]
-        relations = [grid.grid_table.relation for grid in grids]
-        self.session = WaveSession(relations)
+        for i in range(no_of_pages):
+            name = self.notebook.GetPageText(i)
+            grid = self.notebook.GetPage(i).GetChildren()[0]
+            relation = grid.grid_table.relation
+            self.session.set(relation, name)
 
     def on_open_session(self, event):
         wildcard = "Wave files (*.wave)|*.wave| " \
@@ -201,10 +207,10 @@ class MainFrame(wx.Frame):
             raise WaveIOError
         dlg.Destroy()        
         self.session = pickle.load(file)
-        relations = self.session.data()
-        for relation in relations:
+        name_relation_map = self.session.get()
+        for name, relation in name_relation_map.iteritems():
             grid_table = Wave.grid.WaveGridTable(relation)
-            self.notebook.new_page(grid_table)
+            self.notebook.new_page(grid_table, name)
         file.close()
 
     def on_save_session(self, event):
@@ -239,10 +245,10 @@ class MainFrame(wx.Frame):
         if dialog_results.ShowModal() == wx.ID_OK:
             name = dialog_results.GetValue()
         dialog_results.Destroy()
-        relation = Wave.grid.Relation([], name) 
+        relation = Wave.grid.Relation([]) 
         grid_table = Wave.grid.WaveGridTable(relation)
-        self.session.add_new_table(relation)	
-        self.notebook.new_page(grid_table)
+        self.session.set(relation, name)	
+        self.notebook.new_page(grid_table, name)
 
     def on_delete_row(self, event):
         grid = self.current_grid()
@@ -250,59 +256,28 @@ class MainFrame(wx.Frame):
         grid.ForceRefresh()
 
     def on_invert(self, event):
-        current_grid = self.current_grid()
-        current_grid_table = current_grid.grid_table
-        result_name = '~' + current_grid.grid_table.relation.name
-        result_grid_table = Wave.grid.apply_to_grid_tables(dbif.invert, current_grid_table, name = result_name)
-        self.notebook.new_page(result_grid_table)       
+        Wave.handlers.prefix_operator_to_current_page(self, dbif.invert, '~')
 
     def on_closure(self, event):
-        current_grid = self.current_grid()
-        result_name = '^' + current_grid.grid_table.relation.name
-        result_table = Wave.grid.apply_dbif_operation(dbif.close, current_grid)
-        result_relation = Wave.grid.Relation(result_table, result_name)
-        result_grid_table = Wave.grid.WaveGridTable(result_relation)
-        self.notebook.new_page(result_grid_table)       
+        Wave.handlers.prefix_operator_to_current_page(self, dbif.close, '^')
 
-    def select_grid(self):
+    def select_page_index(self):
         no_of_pages = self.notebook.GetPageCount()
-        pages = [self.notebook.GetPage(i) for i in range(no_of_pages)]
-        children = [page.GetChildren() for page in pages]
-        grids = [child[0] for child in children]
-        choices = [grid.grid_table.relation.name for grid in grids]
+        choices = [self.notebook.GetPageText(i) for i in range(no_of_pages)]
         dialog_results = wx.SingleChoiceDialog ( None, 'Pick something....', 'Dialog Title', choices )
         if dialog_results.ShowModal() == wx.ID_OK:
             position = dialog_results.GetSelection()
         dialog_results.Destroy()	    
-        return grids[position]
+        return position
 
     def on_join(self, event):
-        grid1 = self.select_grid()
-        grid2 = self.select_grid()
-        result_name = grid1.grid_table.relation.name + '.' + grid2.grid_table.relation.name	
-        result_table = Wave.grid.apply_dbif_operation(dbif.join, grid1, grid2)
-        result_relation = Wave.grid.Relation(result_table, result_name)
-        result_grid_table = Wave.grid.WaveGridTable(result_relation)
-        self.notebook.new_page(result_grid_table)
+        Wave.handlers.binary_infix_operator_to_selected_pages(self, dbif.join, '.')
 
     def on_diff(self, event):
-        grid1 = self.select_grid()
-        grid2 = self.select_grid()
-        result_name = grid1.grid_table.relation.name + ' - ' + grid2.grid_table.relation.name	
-        result_table = Wave.grid.apply_dbif_operation(dbif.diff, grid1, grid2)
-        result_relation = Wave.grid.Relation(result_table, result_name)
-        result_grid_table = Wave.grid.WaveGridTable(result_relation)
-        self.notebook.new_page(result_grid_table)
+        Wave.handlers.binary_infix_operator_to_selected_pages(self, dbif.diff, '-')
 
     def on_dr(self, event):
-        grid1 = self.select_grid()
-        grid2 = self.select_grid()
-        grid3 = self.select_grid()
-        result_name = 'dangling requires'
-        result_table = Wave.grid.apply_dbif_operation(MM2.dr, grid1, grid2, grid3)
-        result_relation = Wave.grid.Relation(result_table, result_name)
-        result_grid_table = Wave.grid.WaveGridTable(result_relation)
-        self.notebook.new_page(result_grid_table)
+        Wave.handlers.ternary_function_to_selected_pages(self, MM2.dr, 'dr')
 
 def main():
     app = WaveApp()
