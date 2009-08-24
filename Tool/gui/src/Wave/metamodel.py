@@ -33,9 +33,10 @@ class Metamodel():
 
 class MetamodelMenu():
 
-    def __init__(self, frame, metamodel):
+    def __init__(self, frame, metamodel, name):
         self.frame = frame
         self.metamodel = metamodel
+        self.name = name
         self.init_menus()
         self.bind_handlers()
 
@@ -52,7 +53,7 @@ class MetamodelMenu():
             long_name = self.metamodel.get_long_name(wave_function)
             self.frame.mm_sub_menu_items[name] = self.frame.mm_sub_menu.Append(wx.NewId(), name, long_name)
         self.frame.metamodels_menu.AppendSeparator()
-        self.frame.metamodels_menu.AppendMenu(-1, 'MM2', self.frame.mm_sub_menu)  
+        self.frame.metamodels_menu.AppendMenu(-1, self.name, self.frame.mm_sub_menu)  
 
     def bind_handlers(self):
         for wave_function in self.metamodel.functions():

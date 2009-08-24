@@ -100,7 +100,6 @@ class MainFrame(wx.Frame):
         self.init_session_menu()
         self.init_models_menu()
         self.init_metamodels_menu()
-        self.init_operations_menu()
         self.init_menubar()
 
     def init_session_menu(self):
@@ -120,19 +119,11 @@ class MainFrame(wx.Frame):
         self.import_metamodel_menu_item = self.metamodels_menu.Append(wx.NewId(), "&Import", "Import")
         self.metamodels_menu.Append(wx.NewId(), "&Export", "Export")
 
-    def init_operations_menu(self):
-        self.operations_menu = wx.Menu()
-        self.invert_menu_item = self.operations_menu.Append(wx.NewId(), "Invert\tCtrl-`", "Invert")
-        self.closure_menu_item = self.operations_menu.Append(wx.NewId(), "Closure", "Transitive closure.")
-        self.join_menu_item = self.operations_menu.Append(wx.NewId(), "Join", "Join.")
-        self.diff_menu_item = self.operations_menu.Append(wx.NewId(), "Diff", "Difference.")
-
     def init_menubar(self):
         self.menuBar = wx.MenuBar()
         self.menuBar.Append(self.session_menu, "&Session")
         self.menuBar.Append(self.models_menu, "&Model")
         self.menuBar.Append(self.metamodels_menu, "M&eta-models")
-        self.menuBar.Append(self.operations_menu, "&Operations")       
         self.SetMenuBar(self.menuBar)
 
     def init_event_binding(self):
@@ -141,10 +132,6 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.on_new_model, self.new_model_menu_item)
         self.Bind(wx.EVT_TOOL, self.on_new_model, self.new_model_toolbar_item)
         self.Bind(wx.EVT_MENU, self.on_delete_row, self.delete_row_menu_item)
-        self.Bind(wx.EVT_MENU, self.on_invert, self.invert_menu_item)
-        self.Bind(wx.EVT_MENU, self.on_closure, self.closure_menu_item)
-        self.Bind(wx.EVT_MENU, self.on_join, self.join_menu_item)
-        self.Bind(wx.EVT_MENU, self.on_diff, self.diff_menu_item)
         self.Bind(wx.EVT_MENU, self.on_open_session, self.open_session_menu_item)
         self.Bind(wx.EVT_MENU, self.on_save_session, self.save_session_menu_item)
         self.Bind(wx.EVT_MENU, self.on_import_metamodel, self.import_metamodel_menu_item)
@@ -244,12 +231,6 @@ class MainFrame(wx.Frame):
         grid.DeleteRows(row)
         grid.ForceRefresh()
 
-    def on_invert(self, event):
-        Wave.handlers.unary_prefix_operator_to_current_page(self, dbif.invert, '~')
-
-    def on_closure(self, event):
-        Wave.handlers.unary_prefix_operator_to_current_page(self, dbif.close, '^')
-
     def select_page_index(self):
         no_of_pages = self.notebook.GetPageCount()
         choices = [self.notebook.GetPageText(i) for i in range(no_of_pages)]
@@ -259,19 +240,24 @@ class MainFrame(wx.Frame):
         dialog_results.Destroy()	    
         return position
 
-    def on_join(self, event):
-        Wave.handlers.binary_infix_operator_to_selected_pages(self, dbif.join, '.')
-
-    def on_diff(self, event):
-        Wave.handlers.binary_infix_operator_to_selected_pages(self, dbif.diff, '-')
-
     def on_import_metamodel(self, event):
         DR = Wave.metamodel.Function(MM2.DR, Wave.handlers.HandlingStrategy(MM2.DR)())
         DS = Wave.metamodel.Function(MM2.DS, Wave.handlers.HandlingStrategy(MM2.DS)())
         mm2 = Wave.metamodel.Metamodel()
         mm2.add_function(DR, 'dr', 'dangling_requires')
         mm2.add_function(DS, 'ds', 'dangling_supplies')
-        Wave.metamodel.MetamodelMenu(self, mm2)
+        Wave.metamodel.MetamodelMenu(self, mm2, 'MM2')
+
+        JOIN = Wave.metamodel.Function(dbif.join, Wave.handlers.HandlingStrategy(dbif.join)(infix = True))
+        DIFF = Wave.metamodel.Function(dbif.diff, Wave.handlers.HandlingStrategy(dbif.diff)(infix = True))
+        INVERT = Wave.metamodel.Function(dbif.invert, Wave.handlers.HandlingStrategy(dbif.invert)())
+        CLOSE =  Wave.metamodel.Function(dbif.close, Wave.handlers.HandlingStrategy(dbif.close)())
+        operations = Wave.metamodel.Metamodel()
+        operations.add_function(JOIN, 'join', 'join')
+        operations.add_function(DIFF, 'diff', 'diff')
+        operations.add_function(INVERT, 'invert', 'invert')
+        operations.add_function(CLOSE, 'close', 'close')
+        Wave.metamodel.MetamodelMenu(self, operations, 'operations')
 
 def main():
     app = WaveApp()

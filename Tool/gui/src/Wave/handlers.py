@@ -48,12 +48,15 @@ class HandlingStrategy():
     def __init__(self, function):
         self.function = function
 
-    def __call__(self):
+    def __call__(self, infix = False):
         nargs = self.function.func_code.co_argcount
         if nargs == 1:
             return Wave.handlers.unary_prefix_operator_to_current_page
         elif nargs == 2:
-            return Wave.handlers.binary_function_to_selected_pages
+            if infix:
+                return Wave.handlers.binary_infix_operator_to_selected_pages
+            else:
+                return Wave.handlers.binary_function_to_selected_pages
         elif nargs == 3:
             return Wave.handlers.ternary_function_to_selected_pages
         else:
