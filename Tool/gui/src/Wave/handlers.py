@@ -42,3 +42,20 @@ def ternary_function_to_selected_pages(frame, function, name):
     result_grid_table = Wave.grid.apply_to_grid_tables(function, grid_table_1, grid_table_2, grid_table_3)
     frame.notebook.new_page(result_grid_table, result_name)
 
+
+class HandlingStrategy():
+
+    def __init__(self, function):
+        self.function = function
+
+    def __call__(self):
+        nargs = self.function.func_code.co_argcount
+        if nargs == 1:
+            return Wave.handlers.unary_prefix_operator_to_current_page
+        elif nargs == 2:
+            return Wave.handlers.binary_function_to_selected_pages
+        elif nargs == 3:
+            return Wave.handlers.ternary_function_to_selected_pages
+        else:
+            pass
+

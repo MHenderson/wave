@@ -266,10 +266,11 @@ class MainFrame(wx.Frame):
         Wave.handlers.binary_infix_operator_to_selected_pages(self, dbif.diff, '-')
 
     def on_import_metamodel(self, event):
-        DR = Wave.metamodel.Function(MM2.DR, 'dr', Wave.handlers.ternary_function_to_selected_pages, 'dangling requires')
-        DS = Wave.metamodel.Function(MM2.DS, 'ds', Wave.handlers.binary_function_to_selected_pages, 'dangling supplies')
-        F1 = [DR, DS]
-        mm2 = Wave.metamodel.Metamodel('MM2', F1)
+        DR = Wave.metamodel.Function(MM2.DR, Wave.handlers.HandlingStrategy(MM2.DR)())
+        DS = Wave.metamodel.Function(MM2.DS, Wave.handlers.HandlingStrategy(MM2.DS)())
+        mm2 = Wave.metamodel.Metamodel()
+        mm2.add_function(DR, 'dr', 'dangling_requires')
+        mm2.add_function(DS, 'ds', 'dangling_supplies')
         Wave.metamodel.MetamodelMenu(self, mm2)
 
 def main():
