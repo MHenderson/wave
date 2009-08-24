@@ -1,6 +1,6 @@
 import wx, sys, pickle, wx.aui, os
 import Wave
-from Wave import images, dbif, grid, MM2, exceptions, handlers, metamodel
+from Wave import images, dbif, grid, MM2, exceptions, metamodel, operations
 from Wave.exceptions import WaveIOError
 
 ##
@@ -241,23 +241,8 @@ class MainFrame(wx.Frame):
         return position
 
     def on_import_metamodel(self, event):
-        DR = Wave.metamodel.Function(MM2.DR, name = 'dr')
-        DS = Wave.metamodel.Function(MM2.DS, name = 'ds')
-        mm2 = Wave.metamodel.Metamodel()
-        mm2.add_function(DR, 'dr', 'dangling_requires')
-        mm2.add_function(DS, 'ds', 'dangling_supplies')
-        Wave.metamodel.MetamodelMenu(self, mm2, 'MM2')
-
-        JOIN = Wave.metamodel.Function(dbif.join, fix = 'in', symbol = '.')
-        DIFF = Wave.metamodel.Function(dbif.diff, fix = 'in', symbol = '-')
-        INVERT = Wave.metamodel.Function(dbif.invert, fix = 'pre', symbol = '~')
-        CLOSE =  Wave.metamodel.Function(dbif.close, fix = 'pre', symbol = '^')
-        operations = Wave.metamodel.Metamodel()
-        operations.add_function(JOIN, 'join', 'join')
-        operations.add_function(DIFF, 'diff', 'diff')
-        operations.add_function(INVERT, 'invert', 'invert')
-        operations.add_function(CLOSE, 'close', 'close')
-        Wave.metamodel.MetamodelMenu(self, operations, 'operations')
+        Wave.metamodel.Menu(self, MM2.mm, 'MM2')
+        Wave.metamodel.Menu(self, operations.mm, 'operations')
 
 def main():
     app = WaveApp()
