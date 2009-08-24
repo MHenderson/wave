@@ -241,17 +241,17 @@ class MainFrame(wx.Frame):
         return position
 
     def on_import_metamodel(self, event):
-        DR = Wave.metamodel.Function(MM2.DR, Wave.handlers.HandlingStrategy(MM2.DR)())
-        DS = Wave.metamodel.Function(MM2.DS, Wave.handlers.HandlingStrategy(MM2.DS)())
+        DR = Wave.metamodel.Function(MM2.DR, name = 'dr')
+        DS = Wave.metamodel.Function(MM2.DS, name = 'ds')
         mm2 = Wave.metamodel.Metamodel()
         mm2.add_function(DR, 'dr', 'dangling_requires')
         mm2.add_function(DS, 'ds', 'dangling_supplies')
         Wave.metamodel.MetamodelMenu(self, mm2, 'MM2')
 
-        JOIN = Wave.metamodel.Function(dbif.join, Wave.handlers.HandlingStrategy(dbif.join)(infix = True))
-        DIFF = Wave.metamodel.Function(dbif.diff, Wave.handlers.HandlingStrategy(dbif.diff)(infix = True))
-        INVERT = Wave.metamodel.Function(dbif.invert, Wave.handlers.HandlingStrategy(dbif.invert)())
-        CLOSE =  Wave.metamodel.Function(dbif.close, Wave.handlers.HandlingStrategy(dbif.close)())
+        JOIN = Wave.metamodel.Function(dbif.join, fix = 'in', symbol = '.')
+        DIFF = Wave.metamodel.Function(dbif.diff, fix = 'in', symbol = '-')
+        INVERT = Wave.metamodel.Function(dbif.invert, fix = 'pre', symbol = '~')
+        CLOSE =  Wave.metamodel.Function(dbif.close, fix = 'pre', symbol = '^')
         operations = Wave.metamodel.Metamodel()
         operations.add_function(JOIN, 'join', 'join')
         operations.add_function(DIFF, 'diff', 'diff')
