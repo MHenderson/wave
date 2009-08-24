@@ -2,11 +2,6 @@ import wx
 import Wave
 from Wave import grid
 
-##
-#
-# \todo These aren't 'handlers'. They are 'function-call strategies'. Use
-#       suitable naming.
-
 class UnaryPrefixOperatorToCurrentPage:
 
     def __init__(self, operator, prefix):
@@ -72,6 +67,10 @@ class TernaryFunctionToSelectedPages:
         result_grid_table = Wave.grid.apply_to_grid_tables(self.function, grid_table_1, grid_table_2, grid_table_3)
         frame.notebook.new_page(result_grid_table, result_name)
 
+##
+# \todo A Function shouldn't know anything about the user-interface. The
+#       strategies refer to frames, notebooks etc...
+
 class Function():
 
     def __init__(self, function, fix = False, symbol = False, name = False):
@@ -134,6 +133,9 @@ class Metamodel():
 
     def functions(self):
         return self.functions_names_map.keys()
+
+##
+# \todo This Menu class ought not to belong to the metamodel module.
 
 class Menu():
 
