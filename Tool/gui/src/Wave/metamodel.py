@@ -1,9 +1,8 @@
 import wx
-import MM2
 import Wave
 from Wave import handlers
 
-class WaveMetamodelFunction():
+class Function():
 
     def __init__(self, function, name, handler, long_name):
         self.function = function
@@ -11,21 +10,15 @@ class WaveMetamodelFunction():
         self.handler = handler
         self.long_name = long_name
 
-class WaveMetamodel():
+class Metamodel():
 
     def __init__(self, name, functions):
         self.name = name
         self.functions = functions
 
-DR = WaveMetamodelFunction(MM2.DR, 'dr', Wave.handlers.ternary_function_to_selected_pages, 'dangling requires')
-DS = WaveMetamodelFunction(MM2.DS, 'ds', Wave.handlers.binary_function_to_selected_pages, 'dangling supplies')
+class MetamodelMenu():
 
-F1 = [DR, DS]
-mm2 = WaveMetamodel('MM2', F1)
-
-class WaveMetamodelMenu():
-
-    def __init__(self, frame, metamodel = mm2):
+    def __init__(self, frame, metamodel):
         self.frame = frame
         self.metamodel = metamodel
         self.init_menus()
