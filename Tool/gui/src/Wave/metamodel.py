@@ -32,7 +32,7 @@ class Function():
         if ((self.fix == 'pre') and self.symbol):
             return Wave.handlers.UnaryPrefixOperatorToCurrentPage(self.function, self.symbol)
         else:
-            print 'No strategy'
+            raise Wave.exceptions.WaveMissingCallStrategy
 
     def binary_strategy(self):
         if ((self.fix == 'in') and self.symbol):
@@ -40,14 +40,13 @@ class Function():
         elif ((self.fix == False) and self.name):
             return Wave.handlers.BinaryFunctionToSelectedPages(self.function, self.name)
         else:
-            print 'No strategy'
+            raise Wave.exceptions.WaveMissingCallStrategy            
 
     def ternary_strategy(self):
         if ((self.fix == False) and self.name):
             return Wave.handlers.TernaryFunctionToSelectedPages(self.function, self.name)
         else:
-            print 'No strategy'
-
+            raise Wave.exceptions.WaveMissingCallStrategy            
 
 class Metamodel():
 
