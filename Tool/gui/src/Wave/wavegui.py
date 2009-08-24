@@ -265,12 +265,6 @@ class MainFrame(wx.Frame):
     def on_diff(self, event):
         Wave.handlers.binary_infix_operator_to_selected_pages(self, dbif.diff, '-')
 
-    def on_dr(self, event):
-        Wave.handlers.ternary_function_to_selected_pages(self, MM2.DR, 'dr')
-        
-    def on_ds(self, event):
-        Wave.handlers.binary_function_to_selected_pages(self, MM2.DS, 'ds')
-
     def on_import_metamodel(self, event):
         Wave.metamodel.WaveMetamodelMenu(self)
 
