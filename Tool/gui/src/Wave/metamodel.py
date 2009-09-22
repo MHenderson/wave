@@ -67,10 +67,6 @@ class TernaryFunctionToSelectedPages:
         result_grid_table = Wave.grid.apply_to_grid_tables(self.function, grid_table_1, grid_table_2, grid_table_3)
         frame.notebook.new_page(result_grid_table, result_name)
 
-##
-# \todo A Function shouldn't know anything about the user-interface. The
-#       strategies refer to frames, notebooks etc...
-
 class Function():
 
     def __init__(self, function, fix = False, symbol = False, name = False):
@@ -78,16 +74,27 @@ class Function():
         self.fix = fix
         self.symbol = symbol
         self.name = name
-        self.handler = self.apply_strategy()
+
+    def __call__(self, *vargs):
+        return self.function(*vargs)
 
     def get_function(self):
         return self.function
 
+    def nargs(self):
+        return self.function.func_code.co_argcount
+         
+class FunctionWithCallStrategy():
+
+    def __init__(self, function):
+        self.function = function
+        self.handler = self.apply_strategy()
+        
     def get_handler(self):
         return self.handler
 
     def apply_strategy(self):
-        nargs = self.function.func_code.co_argcount
+        nargs = self.function.nargs()
         if nargs == 1:
             return self.unary_strategy()
         elif nargs == 2:
@@ -98,24 +105,24 @@ class Function():
             pass
 
     def unary_strategy(self):
-        if ((self.fix == 'pre') and self.symbol):
-            return UnaryPrefixOperatorToCurrentPage(self.function, self.symbol)
+        if ((self.function.fix == 'pre') and self.function.symbol):
+            return UnaryPrefixOperatorToCurrentPage(self.function, self.function.symbol)
         else:
             raise Wave.exceptions.WaveMissingCallStrategy
 
     def binary_strategy(self):
-        if ((self.fix == 'in') and self.symbol):
-            return BinaryInfixOperatorToSelectedPages(self.function, self.symbol)
-        elif ((self.fix == False) and self.name):
-            return BinaryFunctionToSelectedPages(self.function, self.name)
+        if ((self.function.fix == 'in') and self.function.symbol):
+            return BinaryInfixOperatorToSelectedPages(self.function, self.function.symbol)
+        elif ((self.function.fix == False) and self.function.name):
+            return BinaryFunctionToSelectedPages(self.function, self.function.name)
         else:
             raise Wave.exceptions.WaveMissingCallStrategy            
 
     def ternary_strategy(self):
-        if ((self.fix == False) and self.name):
-            return TernaryFunctionToSelectedPages(self.function, self.name)
+        if ((self.function.fix == False) and self.function.name):
+            return TernaryFunctionToSelectedPages(self.function, self.function.name)
         else:
-            raise Wave.exceptions.WaveMissingCallStrategy            
+            raise Wave.exceptions.WaveMissingCallStrategy 
 
 class Metamodel():
 
@@ -164,5 +171,7 @@ class Menu():
     def bind_handlers(self):
         for wave_function in self.metamodel.functions():
             name = self.metamodel.get_name(wave_function)
-            self.frame.Bind(wx.EVT_MENU, self.create_handler(self.frame, wave_function), self.frame.mm_sub_menu_items[name])
+            function = FunctionWithCallStrategy(wave_function)
+            handler = self.create_handler(self.frame, function)
+            self.frame.Bind(wx.EVT_MENU, handler, self.frame.mm_sub_menu_items[name])
 
