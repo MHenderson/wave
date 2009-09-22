@@ -1,17 +1,16 @@
 # jemdoc
-= WAVE (Whole Architecture Verification)
+= WAVE -- Whole Architecture Verification
 
-The WAVE project .... Here you can find links to download the WAVE graphical user interface (wavegui) ...
+Welcome to the WAVE project homepage. Here you can find links to download the WAVE package for Python, which includes the WaveGUI graphical tool, as well as documentation about the WAVE project.
 
 == Download
-  - [http://pypi.python.org/pypi/Wave/0.0.1 Wavegui download page at the Python Package Index.]
+  - [http://pypi.python.org/pypi/Wave/0.0.1 Wave download page at the Python Package Index.]
 
 == Documentation
-  - [http://packages.python.org/Wave Wavegui documentation.] 
-  - [http://packages.python.org/Wave/api/index.html Wave API documentation.]
+  - [http://packages.python.org/Wave Wave documentation.] 
 
 == Development
-  - [http://github.com/MHenderson/wave/tree/master Wave Project at Github.]
+  - [http://github.com/MHenderson/wave/tree/master Wave project at Github.]
 
 == Papers
   - [doc/archconsist.pdf Consistency Checking for Component Reuse in Open Systems (with P. Henderson), to appear in: 11th International Conference on Software Reuse (ICSR 2009), 27-30 September 2009]
