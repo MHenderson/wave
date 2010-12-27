@@ -7,32 +7,27 @@
 .. automodule:: dbif
    :members:
 
-``exceptions``
---------------
-
-.. automodule:: exceptions
-   :members:
-
 ``metamodel``
 -------------
 
 .. automodule:: metamodel
    :members:
 
-``MM2``
--------
-
-.. automodule:: MM2
-   :members:
-
 ``operations``
---------------
+-------
 
 .. automodule:: operations
    :members:
 
 ``wavegui``
 ===========
+
+``exceptions``
+--------------
+
+.. automodule:: exceptions
+   :members:
+
 
 ``grid``
 --------
