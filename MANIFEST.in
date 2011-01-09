@@ -1,0 +1,2 @@
+recursive-include doc *.html *.css *.png *.gif
+recursive-include wave *.py
