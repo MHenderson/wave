@@ -11,3 +11,5 @@ Tool/gui/doc/_static
 Tool/gui/doc/_templates
 doc/_build
 Buildbot/
+dist
+Wave.egg-info
