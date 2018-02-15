@@ -7,6 +7,7 @@ setup(
     description = "Whole Architecture Verification",
     author = "P Henderson and M J Henderson",
     author_email = "matthew.james.henderson@gmail.com",
+    license = "LGPL",
     url = "http://packages.python.org/Wave/",  
     download_url = "http://pypi.python.org/pypi/Wave/",
     keywords = "wave verification",
