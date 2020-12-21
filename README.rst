@@ -5,6 +5,8 @@ WAVE - Whole Architecture Verification
 Example
 -------
 
+.. code:: python
+
     import wavelib
     from wavelib import dbif
     from wavelib import metamodel
