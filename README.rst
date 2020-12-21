@@ -1,2 +1,3 @@
-# WAVE - Whole Architecture Verification
-
+**************************************
+WAVE - Whole Architecture Verification
+**************************************
