@@ -1,7 +1,3 @@
-import wx
-import Wave
-from Wave import grid
-
 class Function():
 
     def __init__(self, function, fix = False, symbol = False, name = False):

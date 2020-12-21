@@ -1,4 +1,3 @@
-
 def join(r1,r2): 
     """
     This is dot join from Alloy. Both arguments are dbif-tables, as is the 
