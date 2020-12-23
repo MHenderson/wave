@@ -17,7 +17,7 @@ def use(db):
 def do(command):
     """Do a mySQL command. Return a dbif-table."""
     if DEBUGGING:
-        print "do - " + command
+        print("do - " + command)
     connection = MySQLdb.connect(host = HOST, db = DATABASE)
     cursor = connection.cursor()
     resultSet = []
@@ -74,9 +74,9 @@ def recompute():
     except:
         return
     for (table,) in do("show tables"):
-        exec table + ' = get("' + table + '")'
+        exec(table + ' = get("' + table + '")')
     for (table, expr) in vtables:
-        exec table + ' = ' + expr
+        exec(table + ' = ' + expr)
         put(table, eval(table))
 
 #  dbifXML (copied, modified to avoid eval/exec)

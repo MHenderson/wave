@@ -88,8 +88,8 @@ def prn(a):
     Print a relation.
     """
     for line in a:
-        print string.join(line,'\t').strip()
-    print "----"
+        print(string.join(line,'\t').strip())
+    print("----")
 
 def union(t1, t2):
     """
