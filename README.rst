@@ -2,8 +2,19 @@
 WAVE - Whole Architecture Verification
 **************************************
 
+Environment
+-----------
+
+.. code::
+
+    $ conda env create -f environment.yml
+    $ conda activate wave
+
 Example
 -------
+
+Inside the wave environment use pip to install jupyter and then
+try these examples in a notebook.
 
 .. code:: python
 

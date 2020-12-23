@@ -1,0 +1,5 @@
+name: wave
+channels:
+  - defaults
+dependencies:
+  - mysqlclient 
