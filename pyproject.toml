@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "Wave"
+version = "0.1.0"
+description = "Whole architecture verification."
+authors = ["Matthew Henderson <matthew.james.henderson@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+MySQL-python = "^1.2.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

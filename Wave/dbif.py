@@ -1,5 +1,3 @@
-# Peter Henderson, 25.09.08 (Southampton)
-
 import MySQLdb
 import string
 
