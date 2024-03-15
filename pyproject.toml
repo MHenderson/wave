@@ -5,6 +5,9 @@ description = "Whole architecture verification."
 authors = ["Matthew Henderson <matthew.james.henderson@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [
+    { include = "Wave" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
