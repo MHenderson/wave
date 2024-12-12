@@ -1,3 +1,3 @@
-# Wave
+# wharve
 
 Whole architecture verification.
