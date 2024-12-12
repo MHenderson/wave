@@ -1,4 +1,4 @@
-import Wave as wv
+import wharve as wv
 
 def test_join():
     assert wv.join([('a', 'b')], [('b', 'c')]) == [('a', 'c')]
