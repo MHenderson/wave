@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wharve"
-version = "0.1.0"
+version = "0.1.0.9000"
 description = "Whole architecture verification."
 authors = ["Matthew Henderson <matthew.james.henderson@gmail.com>"]
 license = "MIT"

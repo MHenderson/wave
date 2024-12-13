@@ -1,3 +1,14 @@
+def invert(r): 
+    """
+    Twiddle from Alloy.
+    
+    All tuples in the dbif-table r are reversed.
+
+    :param r: A dbif-table.
+    :return A dbif-table representing the twiddle of r.
+    """
+    return [t[-1::-1] for t in  r]
+
 def join(r1, r2): 
     """
     This is dot join from Alloy. Both arguments are dbif-tables, as is the 
