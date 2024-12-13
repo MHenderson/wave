@@ -1,3 +1,13 @@
+def diff(t1, t2):
+    """
+    Difference of relations.
+
+    :param t1: A dbif-table.
+    :param t2: A dbif-table.
+    :return A dbif-table representing the difference of t1 and t2.
+    """
+    return list(set(t1).difference(set(t2)))
+
 def invert(r): 
     """
     Twiddle from Alloy.
