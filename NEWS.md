@@ -1,6 +1,8 @@
-# Wave (development version)
+# wharve (development version)
 
-# Wave (v0.1.0)
+# wharve (0.1.0)
 
+* Rename old Wave project.
 * A fresh start.
-* Using poetry.
+* Implementation of dot join and circle-dot join.
+
